@@ -31,10 +31,12 @@ for (i in min(years):years) {                 #run through each year in dataset
     maxdate <- boxyear[maxchick,]   #store data for final chick observation
     mindate <- boxyear[minchick,]   #store data for first chick observation
     dayschick <- yday(maxdate$DATE) - yday(mindate$DATE)    #get number of days that chick was known to be alive
-    if (dayschick > 20) {}
+    sumzero <- ()
     
-
-      
+    if (dayschick > 20) {} else
+      if (dayschick < 20) {} else
+        if (dayschick == "NA") {}
+    
       
   }
 }
