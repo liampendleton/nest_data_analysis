@@ -19,10 +19,13 @@ success <- rep(0, length(years)) #empty vector to store nest successes
 failure <- rep(0, length(years)) #empty vector to store nest failures
 nestsuccess <- years %>% cbind(success) %>% cbind(failure) #matrix to record yearly outcomes
 
+
 ###############################################
 
 for (i in min(years):years) {                 #run through each year in dataset
   yeardata <- subset(nestdata, YEAR == i)     #store all data for each successive year in temp variable
+  successstorage <- rep(0, length(unique(yeardata$BOXID)))
+  failurestorage <- rep(0, length(unique(yeardata$BOXID)))
   for (j in box_IDs) {                        #run through each box in dataset
     boxyear <- subset(yeardata, BOX_ID == j)  #store data for each box in temp variable
     chickrange <- which(boxyear$Number_Live_Chicks == 1)  #positions of chick observations
@@ -31,13 +34,10 @@ for (i in min(years):years) {                 #run through each year in dataset
     maxdate <- boxyear[maxchick,]   #store data for final chick observation
     mindate <- boxyear[minchick,]   #store data for first chick observation
     dayschick <- yday(maxdate$DATE) - yday(mindate$DATE)    #get number of days that chick was known to be alive
-    sumzero <- ()
-    
-    if (dayschick > 20) {} else
-      if (dayschick < 20) {} else
-        if (dayschick == "NA") {}
-    
-      
+    for (k in successstorage) {
+      if (dayschick > 20) {successstorage[k] <- xxx} else
+        if (dayschick == "NA") {failurestorage[k] <- xxx}
+    }
   }
 }
 
