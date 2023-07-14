@@ -12,10 +12,10 @@ data <- read.csv("PI_Nest_Data_Full.csv")
 data$DATE <- ymd(data$DATE) #convert from character to date format
 
 nestdata <- data %>% 
-  select(YEAR, DATE, BOX_ID, Number_Eggs, Number_Live_Chicks, Number_Dead_Chicks) %>% #select fields of interest
+  select(YEAR, DATE, BOX_ID, Nest_Status, Number_Eggs, Number_Live_Chicks, Number_Dead_Chicks) %>% #select fields of interest
   mutate(DATE = as_date(DATE), #reformat dates
          yday = yday(DATE)) %>% #get day num of each observation
-  filter(!is.na(Number_Eggs)) #show only rows that have eggs
+  # filter(!is.na(Number_Eggs)) #show only rows that have eggs
 
 ################################################################################
 # 
