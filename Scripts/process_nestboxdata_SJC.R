@@ -1,5 +1,8 @@
 library(here)
 
+#make warnings errors so loops will terminate 
+options(warn = 2)  
+
 #nestling period 
 #29 to 54? need to go to get the primary sources (see Birds of the World: Period from Hatching to Departure)
 
@@ -15,11 +18,28 @@ nestbox_data <- data.frame(nestbox.init$YEAR,nestbox.init$DATE,nestbox.init$BOX_
 colnames(nestbox_data) <- c("Year","Date","Box_ID","Number_Eggs","Number_Chicks")
 nestbox_data$Date <- as.Date(nestbox_data$Date,format="%Y-%m-%d")
 
-#create a nest record ID 
-nestbox_data$Record <- paste(nestbox_data$Year,nestbox_data$Box_ID,sep="_")
+#all the date entries for nests checked on 6-18-2010 are entered as 6-18-2020, fixing here 
+nestbox_data$Date[which(nestbox_data$Date == "2020-06-18")] <- "2010-06-18"
 
 #delete 2023 for now 
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Year == 2023)),]
+
+#create a nest record ID 
+nestbox_data$Record <- paste(nestbox_data$Year,nestbox_data$Box_ID,sep="_")
+
+#here are some weird nests that I found - deleting for now - we need to discuss 
+#this nest has no eggs but then chicks appear 
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_78a")),]
+#this nest has no eggs but then chicks appear, then disappear and then reappear!  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_57")),]
+#this nest has no eggs but then chicks appear  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_56")),]
+#this nest has no eggs but then chicks appear  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_65")),]
+#this nest has no eggs but then chicks appear  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_65")),]
+#this nest has no eggs but then chicks appear  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_60")),]
 
 #make NAs = 0 
 nestbox_data$Number_Eggs[which(is.na(nestbox_data$Number_Eggs == TRUE))] <- 0 
@@ -49,11 +69,12 @@ nest_data <- nestbox_data[-c(which(is.element(nestbox_data$Record,nests[which(in
 #create the pared down nests list 
 nests2 <- unique(nest_data$Record)
 
-#set up to record outcome and also set up a warning for suspicious records 
+#set up to record outcome and also set up a warning for records that need another look 
 outcome <- warning <- rep(NA,length(nests2))
 
-#go through nests to get outcome 
+#loop through nests to get outcome 
 for(j in 1:length(nests2)){
+  #by nest: all data, empty records, egg records, chick records, and records with both egg and chick  
   data <- nest_data[which(nest_data$Record == nests2[j]),]
   empty <- data[which(data$Number_Eggs + data$Number_Chicks == 0), ] 
   eggs <- data[which(data$Number_Eggs > 0),]
@@ -70,7 +91,7 @@ for(j in 1:length(nests2)){
     outcome[j] <- 0 
   }else{
   
-    #censor the nest if it was never observed after chicks were gone   
+    #prepare to censor the nest if chicks were still in it at the last observation    
     if(max(data$Date) == max(chicks$Date)){
       outcome[j] <- NA
     }else{ 
@@ -84,9 +105,10 @@ for(j in 1:length(nests2)){
       #when was the nest first empty after chicks? 
       first.appfledge <- empty$Date[min(which(empty$Date > last.chicks))]
     
-      #did the nest reach minimum age? 
+      #what was the minimum age of fledglings when the nest was first observed empty  
       min.age <- first.appfledge - last.eggs
      
+      #set outcome based on comparison to min.age 
       if(min.age > low.fledge){
         outcome[j] <- 1*chicks$Number_Chicks[which(chicks$Date == max(chicks$Date))] 
       }else{
@@ -94,9 +116,9 @@ for(j in 1:length(nests2)){
       }
     
       #did the nest reach an unusually high age, so worth another look? 
-      max.age <- first.appfledge - last.empty 
+      max.age <- first.appfledge - last.eggs 
     
-      if(max.age > high.range){
+      if(max.age > high.fledge){
         warning[j] <- 1 
       } 
     }
