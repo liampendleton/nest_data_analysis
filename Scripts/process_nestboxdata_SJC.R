@@ -132,3 +132,6 @@ output <- data.frame(year,nests2,outcome)
 #delete the nests that are being censored - do this once all done and we feel good about the data  
 #output <- output[-c(which(is.na(output$outcome == TRUE))), ]
 
+write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
+
+
