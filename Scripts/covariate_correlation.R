@@ -7,6 +7,7 @@ library(here)
 library(ggcorrplot)
 library(tidyverse)
 library(satin) 
+library(dplyr)
 
 sst <- read.csv(here("Data", "racerocks_mSST.csv"))
 npgo <- read.csv(here("Data", "NPGO.csv"))                
@@ -70,6 +71,29 @@ pi_pre_npgo <- pi_full_npgo[,1:6]
 
 #####
 #ChlA
+chla1 <- read.csv(here("Data", "erdMH1chlamday_ff42_85c8_cd0c.csv"))
+chla2 <- read.csv(here("Data", "erdSW2018chlamday_29f3_6396_25da.csv"))
+
+chla1 <- chla1[-1,] #get rid of extra headers
+chla2 <- chla2[-1,]
+
+
+
+rownames(chla1) = seq(length=nrow(chla1)) #reset row numbers
+rownames(chla2) = seq(length=nrow(chla2))
+
+
+
+chla_2011_01 <- chla1 %>% filter(time == "2011-01-16T00:00:00Z")
+chla_2011_01_test <- mean(chla_2011_01$chlorophyll)
+
+
+
+  chla_col_head <- c("Year", "Jan", "Feb", "Mar", "Apr", "May", "June", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec")
+chla_row_head <- seq(1995, 2023, 1)
+
+
+
 
 
 
