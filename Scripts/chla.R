@@ -1626,4 +1626,4 @@ chla <- as.data.frame(chla)
 #Clean up NaN
 chla[chla == NaN] <- NA
 pi_full_chla <- chla
-pi_pre_chla <- pi_full_chla[,1:6]
+pi_pre_chla <- pi_full_chla[,1:6] 
