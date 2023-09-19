@@ -1,5 +1,6 @@
 library(here)
 library(tidyverse)
+library(dplyr)
 
 #####
 #ChlA
@@ -1626,4 +1627,53 @@ chla <- as.data.frame(chla)
 #Clean up NaN
 chla[chla == NaN] <- NA
 pi_full_chla <- chla
-pi_pre_chla <- pi_full_chla[,1:6] 
+
+####
+#chla full-year; Jan-Dec
+chla_holder <- rep(NA, nrow(pi_full_chla))
+
+pi_full_chla <- cbind(pi_full_chla, chla_holder)
+# 
+# pi_full_chla$chla_holder <- rowMeans(pi_full_chla[,2:13], na.rm=TRUE)
+# pi_year_chla <- pi_full_chla[,c(1, 14)]
+# colnames(pi_year_chla) <- c("Year", "chla")
+
+####
+#chla full-year; July-June
+full96 <- cbind(pi_full_chla[1,8:13], pi_full_chla[2,2:7])
+full97 <- cbind(pi_full_chla[2,8:13], pi_full_chla[3,2:7])
+full98 <- cbind(pi_full_chla[3,8:13], pi_full_chla[4,2:7])
+full99 <- cbind(pi_full_chla[4,8:13], pi_full_chla[5,2:7])
+full00 <- cbind(pi_full_chla[5,8:13], pi_full_chla[6,2:7])
+full01 <- cbind(pi_full_chla[6,8:13], pi_full_chla[7,2:7])
+full02 <- cbind(pi_full_chla[7,8:13], pi_full_chla[8,2:7])
+full03 <- cbind(pi_full_chla[8,8:13], pi_full_chla[9,2:7])
+full04 <- cbind(pi_full_chla[9,8:13], pi_full_chla[10,2:7])
+full05 <- cbind(pi_full_chla[10,8:13], pi_full_chla[11,2:7])
+full06 <- cbind(pi_full_chla[11,8:13], pi_full_chla[12,2:7])
+full07 <- cbind(pi_full_chla[12,8:13], pi_full_chla[13,2:7])
+full08 <- cbind(pi_full_chla[13,8:13], pi_full_chla[14,2:7])
+full09 <- cbind(pi_full_chla[14,8:13], pi_full_chla[15,2:7])
+full10 <- cbind(pi_full_chla[15,8:13], pi_full_chla[16,2:7])
+full11 <- cbind(pi_full_chla[16,8:13], pi_full_chla[17,2:7])
+full12 <- cbind(pi_full_chla[17,8:13], pi_full_chla[18,2:7])
+full13 <- cbind(pi_full_chla[18,8:13], pi_full_chla[19,2:7])
+full14 <- cbind(pi_full_chla[19,8:13], pi_full_chla[20,2:7])
+full15 <- cbind(pi_full_chla[20,8:13], pi_full_chla[21,2:7])
+full16 <- cbind(pi_full_chla[21,8:13], pi_full_chla[22,2:7])
+full17 <- cbind(pi_full_chla[22,8:13], pi_full_chla[23,2:7])
+full18 <- cbind(pi_full_chla[23,8:13], pi_full_chla[24,2:7])
+full19 <- cbind(pi_full_chla[24,8:13], pi_full_chla[25,2:7])
+full20 <- cbind(pi_full_chla[25,8:13], pi_full_chla[26,2:7])
+full21 <- cbind(pi_full_chla[26,8:13], pi_full_chla[27,2:7])
+full22 <- cbind(pi_full_chla[27,8:13], pi_full_chla[28,2:7])
+full23 <- cbind(pi_full_chla[28,8:13], pi_full_chla[29,2:7])
+
+pi_full_rnames <- seq(1996, 2023, 1)
+pi_full2_chla <- rbind(full96, full97, full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22, full23)
+pi_full2_chla <- cbind(pi_full_rnames, pi_full2_chla)
+pi_full2_chla <- cbind(pi_full2_chla, chla_holder[1:28])
+
+pi_full2_chla$`chla_holder[1:28]` <- rowMeans(pi_full2_chla[,2:13], na.rm=TRUE)
+pi_full2_chla <- pi_full2_chla[,c(1,14)]
+colnames(pi_full2_chla) <- c("Year", "ChlA")
