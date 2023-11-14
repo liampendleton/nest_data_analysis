@@ -1439,185 +1439,7 @@ chla_col_head <- c("Year", "Jan", "Feb", "Mar", "Apr", "May", "June", "Jul", "Au
 colnames(chla) <- chla_col_head
 chla <- as.data.frame(chla)
 
-###############################
-#Address empty data
-#Jan
-jan <- chla$Jan[!is.na(chla$Jan)]
-
-jan.vec <- which(is.na(chla$Jan))
-
-jan.vec.2 <- rep(NA, length(jan.vec))
-
-for(i in 1:length(jan.vec)){
-  jan.vec.2[i] <- (mean(as.numeric(jan)) + rnorm(1, mean(jan), sd(jan)))
-}
-
-chla$Jan[jan.vec] <- jan.vec.2
-
-#Feb
-feb <- chla$Feb[!is.na(chla$Feb)]
-
-feb.vec <- which(is.na(chla$Feb))
-
-feb.vec.2 <- rep(NA, length(feb.vec))
-
-for(i in 1:length(feb.vec)){
-  feb.vec.2[i] <- (mean(as.numeric(feb)) + rnorm(1,0,1))
-}
-
-chla$Feb[feb.vec] <- feb.vec.2
-
-#Mar
-mar <- chla$Mar[!is.na(chla$Mar)]
-
-mar.vec <- which(is.na(chla$Mar))
-
-mar.vec.2 <- rep(NA, length(mar.vec))
-
-for(i in 1:length(mar.vec)){
-  mar.vec.2[i] <- (mean(as.numeric(mar)) + rnorm(1,0,1))
-}
-
-chla$Mar[mar.vec] <- mar.vec.2
-
-#Apr
-apr <- chla$Apr[!is.na(chla$Apr)]
-
-apr.vec <- which(is.na(chla$Apr))
-
-apr.vec.2 <- rep(NA, length(apr.vec))
-
-for(i in 1:length(apr.vec)){
-  apr.vec.2[i] <- (mean(as.numeric(apr)) + rnorm(1,0,1))
-}
-
-chla$Apr[apr.vec] <- apr.vec.2
-
-#May
-may <- chla$May[!is.na(chla$May)]
-
-may.vec <- which(is.na(chla$May))
-
-may.vec.2 <- rep(NA, length(may.vec))
-
-for(i in 1:length(may.vec)){
-  may.vec.2[i] <- (mean(as.numeric(may)) + rnorm(1,0,1))
-}
-
-chla$May[may.vec] <- may.vec.2
-
-#June
-jun <- chla$June[!is.na(chla$June)]
-
-jun.vec <- which(is.na(chla$June))
-
-jun.vec.2 <- rep(NA, length(jun.vec))
-
-for(i in 1:length(jun.vec)){
-  jun.vec.2[i] <- (mean(as.numeric(jun)) + rnorm(1,0,1))
-}
-
-chla$June[jun.vec] <- jun.vec.2
-
-#July
-jul <- chla$Jul[!is.na(chla$Jul)]
-
-jul.vec <- which(is.na(chla$Jul))
-
-jul.vec.2 <- rep(NA, length(jul.vec))
-
-for(i in 1:length(jul.vec)){
-  jul.vec.2[i] <- (mean(as.numeric(jul)) + rnorm(1,0,1))
-}
-
-chla$Jul[jul.vec] <- jul.vec.2
-
-#Aug
-aug <- chla$Aug[!is.na(chla$Aug)]
-
-aug.vec <- which(is.na(chla$Aug))
-
-aug.vec.2 <- rep(NA, length(aug.vec))
-
-for(i in 1:length(aug.vec)){
-  aug.vec.2[i] <- (mean(as.numeric(aug)) + rnorm(1,0,1))
-}
-
-chla$Aug[aug.vec] <- aug.vec.2
-
-#Sept
-sep <- chla$Sept[!is.na(chla$Sept)]
-
-sep.vec <- which(is.na(chla$Sept))
-
-sep.vec.2 <- rep(NA, length(sep.vec))
-
-for(i in 1:length(sep.vec)){
-  sep.vec.2[i] <- (mean(as.numeric(sep)) + rnorm(1,0,1))
-}
-
-chla$Sept[sep.vec] <- sep.vec.2
-
-#Oct
-oct <- chla$Oct[!is.na(chla$Oct)]
-
-oct.vec <- which(is.na(chla$Oct))
-
-oct.vec.2 <- rep(NA, length(oct.vec))
-
-for(i in 1:length(oct.vec)){
-  oct.vec.2[i] <- (mean(as.numeric(oct)) + rnorm(1,0,1))
-}
-
-chla$Oct[oct.vec] <- oct.vec.2
-
-#Nov
-nov <- chla$Nov[!is.na(chla$Nov)]
-
-nov.vec <- which(is.na(chla$Nov))
-
-nov.vec.2 <- rep(NA, length(nov.vec))
-
-for(i in 1:length(nov.vec)){
-  nov.vec.2[i] <- (mean(as.numeric(nov)) + rnorm(1,0,1))
-}
-
-chla$Nov[nov.vec] <- nov.vec.2
-
-#Dec... all missing data
-chla$Dec[1] <- mean(c(chla$Nov[1], chla$Jan[2]))
-chla$Dec[2] <- mean(c(chla$Nov[2], chla$Jan[3]))
-chla$Dec[3] <- mean(c(chla$Nov[3], chla$Jan[4]))
-chla$Dec[4] <- mean(c(chla$Nov[4], chla$Jan[5]))
-chla$Dec[5] <- mean(c(chla$Nov[5], chla$Jan[6]))
-chla$Dec[6] <- mean(c(chla$Nov[6], chla$Jan[7]))
-chla$Dec[7] <- mean(c(chla$Nov[7], chla$Jan[8]))
-chla$Dec[8] <- mean(c(chla$Nov[8], chla$Jan[9]))
-chla$Dec[9] <- mean(c(chla$Nov[9], chla$Jan[10]))
-chla$Dec[10] <- mean(c(chla$Nov[10], chla$Jan[11]))
-chla$Dec[11] <- mean(c(chla$Nov[11], chla$Jan[12]))
-chla$Dec[12] <- mean(c(chla$Nov[12], chla$Jan[13]))
-chla$Dec[13] <- mean(c(chla$Nov[13], chla$Jan[14]))
-chla$Dec[14] <- mean(c(chla$Nov[14], chla$Jan[15]))
-chla$Dec[15] <- mean(c(chla$Nov[15], chla$Jan[16]))
-chla$Dec[16] <- mean(c(chla$Nov[16], chla$Jan[17]))
-chla$Dec[17] <- mean(c(chla$Nov[17], chla$Jan[18]))
-chla$Dec[18] <- mean(c(chla$Nov[18], chla$Jan[19]))
-chla$Dec[19] <- mean(c(chla$Nov[19], chla$Jan[20]))
-chla$Dec[20] <- mean(c(chla$Nov[20], chla$Jan[21]))
-chla$Dec[21] <- mean(c(chla$Nov[21], chla$Jan[22]))
-chla$Dec[22] <- mean(c(chla$Nov[22], chla$Jan[23]))
-chla$Dec[23] <- mean(c(chla$Nov[23], chla$Jan[24]))
-chla$Dec[24] <- mean(c(chla$Nov[24], chla$Jan[25]))
-chla$Dec[25] <- mean(c(chla$Nov[25], chla$Jan[26]))
-chla$Dec[26] <- chla$Nov[26]
-
-################################################################################
-####
-
-####
-
-
+###############################################################################
 #chla full-year; May(t-1)-April(t)
 full98 <- cbind(chla[1,6:13], chla[2,2:5])
 full99 <- cbind(chla[2,6:13], chla[3,2:5])
@@ -1647,15 +1469,15 @@ full22 <- cbind(chla[25,6:13], chla[26,2:5])
 
 
 pi_year_rnames <- seq(1998, 2022, 1)
-pi_year_chla <- rbind(full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22)
-pi_year_chla <- cbind(pi_year_rnames, pi_year_chla)
-chla_holder <- rep(NA, nrow(pi_year_chla))
-pi_year_chla <- cbind(pi_year_chla, chla_holder)
+year_1_chla <- rbind(full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22)
+year_1_chla <- cbind(pi_year_rnames, year_1_chla)
+chla_holder <- rep(NA, nrow(year_1_chla))
+year_1_chla <- cbind(year_1_chla, chla_holder)
 
 
-pi_year_chla$chla_holder[1:25] <- rowMeans(pi_year_chla[,2:13], na.rm=TRUE)
-pi_year_chla <- pi_year_chla[,c(1,14)]
-colnames(pi_year_chla) <- c("Year", "chla")
+year_1_chla$chla_holder[1:25] <- rowMeans(year_1_chla[,2:13], na.rm=TRUE)
+year_1_chla <- year_1_chla[,c(1,14)]
+colnames(year_1_chla) <- c("Year", "chla")
 
 #chla full-year; Oct(t-1)-Sept(t)
 full.2.98 <- cbind(chla[1,11:13], chla[2,2:10])
@@ -1684,28 +1506,28 @@ full.2.20 <- cbind(chla[23,11:13], chla[24,2:10])
 full.2.21 <- cbind(chla[24,11:13], chla[25,2:10])
 full.2.22 <- cbind(chla[25,11:13], chla[26,2:10])
 
-pi_year2_chla <- rbind(full.2.98, full.2.99, full.2.00, full.2.01, full.2.02, full.2.03, full.2.04, full.2.05, full.2.06, full.2.07, full.2.08, full.2.09, full.2.10, full.2.11, full.2.12, full.2.13, full.2.14, full.2.15, full.2.16, full.2.17, full.2.18, full.2.19, full.2.20, full.2.21, full.2.22)
-pi_year2_chla <- cbind(pi_year_rnames, pi_year2_chla)
-pi_year2_chla <- cbind(pi_year2_chla, chla_holder)
+year_2_chla <- rbind(full.2.98, full.2.99, full.2.00, full.2.01, full.2.02, full.2.03, full.2.04, full.2.05, full.2.06, full.2.07, full.2.08, full.2.09, full.2.10, full.2.11, full.2.12, full.2.13, full.2.14, full.2.15, full.2.16, full.2.17, full.2.18, full.2.19, full.2.20, full.2.21, full.2.22)
+year_2_chla <- cbind(pi_year_rnames, year_2_chla)
+year_2_chla <- cbind(year_2_chla, chla_holder)
 
-pi_year2_chla$chla_holder[1:25] <- rowMeans(pi_year2_chla[,2:13], na.rm=TRUE)
-pi_year2_chla <- pi_year2_chla[,c(1,14)]
-colnames(pi_year2_chla) <- c("Year", "chla")
+year_2_chla$chla_holder[1:25] <- rowMeans(year_2_chla[,2:13], na.rm=TRUE)
+year_2_chla <- year_2_chla[,c(1,14)]
+colnames(year_2_chla) <- c("Year", "chla")
 
 ####
 #chla pre-breeding season; Jan-Apr
 chla_holder <- rep(NA, dim(chla)[1])
-pi_pre_chla <- cbind(chla[,1:5], chla_holder)
-pi_pre_chla$chla_holder <- rowMeans(pi_pre_chla[,2:5], na.rm=TRUE)
-pi_pre_chla <- pi_pre_chla[,c(1,6)]
-colnames(pi_pre_chla) <- c("Year", "chla")
+pre_chla <- cbind(chla[,1:5], chla_holder)
+pre_chla$chla_holder <- rowMeans(pre_chla[,2:5], na.rm=TRUE)
+pre_chla <- pre_chla[,c(1,6)]
+colnames(pre_chla) <- c("Year", "chla")
 
 ####
 #chla breeding season; May - Sept
-pi_breeding_chla <- cbind(chla[,c(1,6:10)], chla_holder)
-pi_breeding_chla$chla_holder <- rowMeans(pi_breeding_chla[,2:6], na.rm=TRUE)
-pi_breeding_chla <- pi_breeding_chla[,c(1,7)]
-colnames(pi_breeding_chla) <- c("Year", "chla")
+breed_chla <- cbind(chla[,c(1,6:10)], chla_holder)
+breed_chla$chla_holder <- rowMeans(breed_chla[,2:6], na.rm=TRUE)
+breed_chla <- breed_chla[,c(1,7)]
+colnames(breed_chla) <- c("Year", "chla")
 
 ####
 #winter; Oct-Mar
@@ -1737,13 +1559,13 @@ winter21 <- cbind(chla[25,11:13], chla[26,2:4])
 winter22 <- cbind(chla[26,11:13], chla[27,2:4])
 
 pi_winter_rnames <- seq(1997, 2022, 1)
-pi_winter_chla <- rbind(winter97, winter98, winter99, winter00, winter01, winter02, winter03, winter04, winter05, winter06, winter07, winter08, winter09, winter10, winter11, winter12, winter13, winter14, winter15, winter16, winter17, winter18, winter19, winter20, winter21, winter22)
-pi_winter_chla <- cbind(pi_winter_rnames, pi_winter_chla)
-pi_winter_chla <- cbind(pi_winter_chla, chla_holder)
+winter_chla <- rbind(winter97, winter98, winter99, winter00, winter01, winter02, winter03, winter04, winter05, winter06, winter07, winter08, winter09, winter10, winter11, winter12, winter13, winter14, winter15, winter16, winter17, winter18, winter19, winter20, winter21, winter22)
+winter_chla <- cbind(pi_winter_rnames, winter_chla)
+winter_chla <- cbind(winter_chla, chla_holder)
 
-pi_winter_chla$chla_holder <- rowMeans(pi_winter_chla[,2:7], na.rm=TRUE)
-pi_winter_chla <- pi_winter_chla[,c(1,8)]
-colnames(pi_winter_chla) <- c("Year", "chla")
+winter_chla$chla_holder <- rowMeans(winter_chla[,2:7], na.rm=TRUE)
+winter_chla <- winter_chla[,c(1,8)]
+colnames(winter_chla) <- c("Year", "chla")
 
 ####
 #clean things up in environment

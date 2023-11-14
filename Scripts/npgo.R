@@ -53,8 +53,8 @@ npgo_holder <- rep(NA, nrow(pi_full_npgo))
 pi_full_npgo <- cbind(pi_full_npgo, npgo_holder)
 pi_full_npgo <- as.data.frame(pi_full_npgo)
 pi_full_npgo$npgo_holder <- rowMeans(pi_full_npgo[,2:13], na.rm=TRUE)
-pi_year_npgo <- pi_full_npgo[,c(1, 14)]
-colnames(pi_year_npgo) <- c("Year", "NPGO")
+year_1_npgo <- pi_full_npgo[,c(1, 14)]
+colnames(year_1_npgo) <- c("Year", "NPGO")
 
 ####
 #NPGO full-year; May(t-1)-April(t)
@@ -88,13 +88,13 @@ full22 <- cbind(pi_full_npgo[27,6:13], pi_full_npgo[28,2:5])
 full23 <- cbind(pi_full_npgo[28,6:13], pi_full_npgo[29,2:5])
 
 pi_year_rnames <- seq(1996, 2023, 1)
-pi_year_npgo <- rbind(full96, full97, full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22, full23)
-pi_year_npgo <- cbind(pi_year_rnames, pi_year_npgo)
-pi_year_npgo <- cbind(pi_year_npgo, npgo_holder[1:28])
+year_1_npgo <- rbind(full96, full97, full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22, full23)
+year_1_npgo <- cbind(pi_year_rnames, year_1_npgo)
+year_1_npgo <- cbind(year_1_npgo, npgo_holder[1:28])
 
-pi_year_npgo$`npgo_holder[1:28]` <- rowMeans(pi_year_npgo[,2:13], na.rm=TRUE)
-pi_year_npgo <- pi_year_npgo[,c(1,14)]
-colnames(pi_year_npgo) <- c("Year", "NPGO")
+year_1_npgo$`npgo_holder[1:28]` <- rowMeans(year_1_npgo[,2:13], na.rm=TRUE)
+year_1_npgo <- year_1_npgo[,c(1,14)]
+colnames(year_1_npgo) <- c("Year", "NPGO")
 
 #NPGO full-year; Oct(t-1)-Sept(t)
 full.2.96 <- cbind(pi_full_npgo[1,11:13], pi_full_npgo[2,2:10])
@@ -126,27 +126,27 @@ full.2.21 <- cbind(pi_full_npgo[26,11:13], pi_full_npgo[27,2:10])
 full.2.22 <- cbind(pi_full_npgo[27,11:13], pi_full_npgo[28,2:10])
 full.2.23 <- cbind(pi_full_npgo[28,11:13], pi_full_npgo[29,2:10])
 
-pi_year2_npgo <- rbind(full.2.96, full.2.97, full.2.98, full.2.99, full.2.00, full.2.01, full.2.02, full.2.03, full.2.04, full.2.05, full.2.06, full.2.07, full.2.08, full.2.09, full.2.10, full.2.11, full.2.12, full.2.13, full.2.14, full.2.15, full.2.16, full.2.17, full.2.18, full.2.19, full.2.20, full.2.21, full.2.22, full.2.23)
-pi_year2_npgo <- cbind(pi_year_rnames, pi_year2_npgo)
-pi_year2_npgo <- cbind(pi_year2_npgo, npgo_holder[1:28])
+year_2_npgo <- rbind(full.2.96, full.2.97, full.2.98, full.2.99, full.2.00, full.2.01, full.2.02, full.2.03, full.2.04, full.2.05, full.2.06, full.2.07, full.2.08, full.2.09, full.2.10, full.2.11, full.2.12, full.2.13, full.2.14, full.2.15, full.2.16, full.2.17, full.2.18, full.2.19, full.2.20, full.2.21, full.2.22, full.2.23)
+year_2_npgo <- cbind(pi_year_rnames, year_2_npgo)
+year_2_npgo <- cbind(year_2_npgo, npgo_holder[1:28])
 
-pi_year2_npgo$`npgo_holder[1:28]` <- rowMeans(pi_year2_npgo[,2:13], na.rm=TRUE)
-pi_year2_npgo <- pi_year2_npgo[,c(1,14)]
-colnames(pi_year2_npgo) <- c("Year", "NPGO")
+year_2_npgo$`npgo_holder[1:28]` <- rowMeans(year_2_npgo[,2:13], na.rm=TRUE)
+year_2_npgo <- year_2_npgo[,c(1,14)]
+colnames(year_2_npgo) <- c("Year", "NPGO")
 
 ####
 #NPGO pre-breeding season; Jan-Apr
-pi_pre_npgo <- cbind(pi_full_npgo[,1:5], npgo_holder)
-pi_pre_npgo$npgo_holder <- rowMeans(pi_pre_npgo[,2:5], na.rm=TRUE)
-pi_pre_npgo <- pi_pre_npgo[,c(1,6)]
-colnames(pi_pre_npgo) <- c("Year", "NPGO")
+pre_npgo <- cbind(pi_full_npgo[,1:5], npgo_holder)
+pre_npgo$npgo_holder <- rowMeans(pre_npgo[,2:5], na.rm=TRUE)
+pre_npgo <- pre_npgo[,c(1,6)]
+colnames(pre_npgo) <- c("Year", "NPGO")
 
 ####
 #NPGO breeding season; May - Sept
-pi_breeding_npgo <- cbind(pi_full_npgo[,c(1,6:10)], npgo_holder)
-pi_breeding_npgo$npgo_holder <- rowMeans(pi_breeding_npgo[,2:6], na.rm=TRUE)
-pi_breeding_npgo <- pi_breeding_npgo[,c(1,7)]
-colnames(pi_breeding_npgo) <- c("Year", "NPGO")
+breed_npgo <- cbind(pi_full_npgo[,c(1,6:10)], npgo_holder)
+breed_npgo$npgo_holder <- rowMeans(breed_npgo[,2:6], na.rm=TRUE)
+breed_npgo <- breed_npgo[,c(1,7)]
+colnames(breed_npgo) <- c("Year", "NPGO")
 
 ####
 #winter; Oct-Mar
@@ -180,13 +180,13 @@ winter22 <- cbind(pi_full_npgo[27,11:13], pi_full_npgo[28,2:4])
 winter23 <- cbind(pi_full_npgo[28,11:13], pi_full_npgo[29,2:4])
 
 pi_winter_rnames <- seq(1996, 2023, 1)
-pi_winter_npgo <- rbind(winter96, winter97, winter98, winter99, winter00, winter01, winter02, winter03, winter04, winter05, winter06, winter07, winter08, winter09, winter10, winter11, winter12, winter13, winter14, winter15, winter16, winter17, winter18, winter19, winter20, winter21, winter22, winter23)
-pi_winter_npgo <- cbind(pi_winter_rnames, pi_winter_npgo)
-pi_winter_npgo <- cbind(pi_winter_npgo, npgo_holder[1:28])
+winter_npgo <- rbind(winter96, winter97, winter98, winter99, winter00, winter01, winter02, winter03, winter04, winter05, winter06, winter07, winter08, winter09, winter10, winter11, winter12, winter13, winter14, winter15, winter16, winter17, winter18, winter19, winter20, winter21, winter22, winter23)
+winter_npgo <- cbind(pi_winter_rnames, winter_npgo)
+winter_npgo <- cbind(winter_npgo, npgo_holder[1:28])
 
-pi_winter_npgo$`npgo_holder[1:28]` <- rowMeans(pi_winter_npgo[,2:7], na.rm=TRUE)
-pi_winter_npgo <- pi_winter_npgo[,c(1,8)]
-colnames(pi_winter_npgo) <- c("Year", "NPGO")
+winter_npgo$`npgo_holder[1:28]` <- rowMeans(winter_npgo[,2:7], na.rm=TRUE)
+winter_npgo <- winter_npgo[,c(1,8)]
+colnames(winter_npgo) <- c("Year", "NPGO")
 
 ####
 #clean things up in environment

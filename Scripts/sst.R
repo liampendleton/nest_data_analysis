@@ -42,13 +42,13 @@ full22 <- cbind(pi_full_sst[27,6:13], pi_full_sst[28,2:5])
 full23 <- cbind(pi_full_sst[28,6:13], pi_full_sst[29,2:5])
 
 pi_year_rnames <- seq(1996, 2023, 1)
-pi_year_sst <- rbind(full96, full97, full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22, full23)
-pi_year_sst <- cbind(pi_year_rnames, pi_year_sst)
-pi_year_sst <- cbind(pi_year_sst, sst_holder[1:28])
+year_1_sst <- rbind(full96, full97, full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22, full23)
+year_1_sst <- cbind(pi_year_rnames, year_1_sst)
+year_1_sst <- cbind(year_1_sst, sst_holder[1:28])
 
-pi_year_sst$`sst_holder[1:28]` <- rowMeans(pi_year_sst[,2:13], na.rm=TRUE)
-pi_year_sst <- pi_year_sst[,c(1,14)]
-colnames(pi_year_sst) <- c("Year", "SST")
+year_1_sst$`sst_holder[1:28]` <- rowMeans(year_1_sst[,2:13], na.rm=TRUE)
+year_1_sst <- year_1_sst[,c(1,14)]
+colnames(year_1_sst) <- c("Year", "SST")
 
 #SST full-year; Oct(t-1)-Sept(t)
 full.2.96 <- cbind(pi_full_sst[1,11:13], pi_full_sst[2,2:10])
@@ -80,27 +80,27 @@ full.2.21 <- cbind(pi_full_sst[26,11:13], pi_full_sst[27,2:10])
 full.2.22 <- cbind(pi_full_sst[27,11:13], pi_full_sst[28,2:10])
 full.2.23 <- cbind(pi_full_sst[28,11:13], pi_full_sst[29,2:10])
 
-pi_year2_sst <- rbind(full.2.96, full.2.97, full.2.98, full.2.99, full.2.00, full.2.01, full.2.02, full.2.03, full.2.04, full.2.05, full.2.06, full.2.07, full.2.08, full.2.09, full.2.10, full.2.11, full.2.12, full.2.13, full.2.14, full.2.15, full.2.16, full.2.17, full.2.18, full.2.19, full.2.20, full.2.21, full.2.22, full.2.23)
-pi_year2_sst <- cbind(pi_year_rnames, pi_year2_sst)
-pi_year2_sst <- cbind(pi_year2_sst, sst_holder[1:28])
+year_2_sst <- rbind(full.2.96, full.2.97, full.2.98, full.2.99, full.2.00, full.2.01, full.2.02, full.2.03, full.2.04, full.2.05, full.2.06, full.2.07, full.2.08, full.2.09, full.2.10, full.2.11, full.2.12, full.2.13, full.2.14, full.2.15, full.2.16, full.2.17, full.2.18, full.2.19, full.2.20, full.2.21, full.2.22, full.2.23)
+year_2_sst <- cbind(pi_year_rnames, year_2_sst)
+year_2_sst <- cbind(year_2_sst, sst_holder[1:28])
 
-pi_year2_sst$`sst_holder[1:28]` <- rowMeans(pi_year2_sst[,2:13], na.rm=TRUE)
-pi_year2_sst <- pi_year2_sst[,c(1,14)]
-colnames(pi_year2_sst) <- c("Year", "SST")
+year_2_sst$`sst_holder[1:28]` <- rowMeans(year_2_sst[,2:13], na.rm=TRUE)
+year_2_sst <- year_2_sst[,c(1,14)]
+colnames(year_2_sst) <- c("Year", "SST")
 
 ####
 #SST pre-breeding season; Jan-Apr
-pi_pre_sst <- cbind(pi_full_sst[,1:5], sst_holder)
-pi_pre_sst$sst_holder <- rowMeans(pi_pre_sst[,2:5], na.rm=TRUE)
-pi_pre_sst <- pi_pre_sst[,c(1,6)]
-colnames(pi_pre_sst) <- c("Year", "SST")
+pre_sst <- cbind(pi_full_sst[,1:5], sst_holder)
+pre_sst$sst_holder <- rowMeans(pre_sst[,2:5], na.rm=TRUE)
+pre_sst <- pre_sst[,c(1,6)]
+colnames(pre_sst) <- c("Year", "SST")
 
 ####
 #SST breeding season; May - Sept
-pi_breeding_sst <- cbind(pi_full_sst[,c(1,6:10)], sst_holder)
-pi_breeding_sst$sst_holder <- rowMeans(pi_breeding_sst[,2:6], na.rm=TRUE)
-pi_breeding_sst <- pi_breeding_sst[,c(1,7)]
-colnames(pi_breeding_sst) <- c("Year", "SST")
+breed_sst <- cbind(pi_full_sst[,c(1,6:10)], sst_holder)
+breed_sst$sst_holder <- rowMeans(breed_sst[,2:6], na.rm=TRUE)
+breed_sst <- breed_sst[,c(1,7)]
+colnames(breed_sst) <- c("Year", "SST")
 
 ####
 #winter; Oct-Mar
@@ -134,13 +134,13 @@ winter22 <- cbind(pi_full_sst[27,11:13], pi_full_sst[28,2:4])
 winter23 <- cbind(pi_full_sst[28,11:13], pi_full_sst[29,2:4])
 
 pi_winter_rnames <- seq(1996, 2023, 1)
-pi_winter_sst <- rbind(winter96, winter97, winter98, winter99, winter00, winter01, winter02, winter03, winter04, winter05, winter06, winter07, winter08, winter09, winter10, winter11, winter12, winter13, winter14, winter15, winter16, winter17, winter18, winter19, winter20, winter21, winter22, winter23)
-pi_winter_sst <- cbind(pi_winter_rnames, pi_winter_sst)
-pi_winter_sst <- cbind(pi_winter_sst, sst_holder[1:28])
+winter_sst <- rbind(winter96, winter97, winter98, winter99, winter00, winter01, winter02, winter03, winter04, winter05, winter06, winter07, winter08, winter09, winter10, winter11, winter12, winter13, winter14, winter15, winter16, winter17, winter18, winter19, winter20, winter21, winter22, winter23)
+winter_sst <- cbind(pi_winter_rnames, winter_sst)
+winter_sst <- cbind(winter_sst, sst_holder[1:28])
 
-pi_winter_sst$`sst_holder[1:28]` <- rowMeans(pi_winter_sst[,2:7], na.rm=TRUE)
-pi_winter_sst <- pi_winter_sst[,c(1,8)]
-colnames(pi_winter_sst) <- c("Year", "SST")
+winter_sst$`sst_holder[1:28]` <- rowMeans(winter_sst[,2:7], na.rm=TRUE)
+winter_sst <- winter_sst[,c(1,8)]
+colnames(winter_sst) <- c("Year", "SST")
 
 ####
 #clean things up in environment
