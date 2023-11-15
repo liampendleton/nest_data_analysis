@@ -1569,7 +1569,7 @@ colnames(winter_chla) <- c("Year", "chla")
 
 ####
 #clean things up in environment
-rm(chla)
+# rm(chla)
 rm(pi_full_chla)
 rm(winter96)
 rm(winter97)
