@@ -1,4 +1,8 @@
 library(here)
+# install.packages(jagsUI)
+library(jagsUI)
+library(rjags)
+library(tidyverse)
 
 #read in data 
 nests <- read.csv(here("Data","model_input.csv"))
@@ -15,25 +19,24 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year[i]] * breed_chla[y,m] #note addition of chla
-  logit(gamma[i]) <- int.gam + eps.gam[year[i]] * breed_chla[y,m] #same here; chla
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.sst * sst[year[i]] #note addition of chla
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.sst * sst[year[i]] #same here; chla
 
 } 
 
 for(y in 1:n.years){  #random effects to explain residual annual variation 
   eps.S[y] ~ dnorm(0,tau.S) 
   eps.gam[y] ~ dnorm(0,tau.gam)
-  breed_chla[y] ~ mean(breed_chla_1[y,m]) #LP 
-  breed_chla_1[y] ~ dnorm(E_breed_chla_1[y,m], tau.chla1) #LP
-  E_breed_chla_1[y] ~ dnorm(0,0.001) + rho * breed_chla_1[y,m-1]
 } 
 
 tau.S <- pow(sigma.S,-2)
 sigma.S ~ dunif(0,10) 
 tau.gam <- pow(sigma.gam,-2)
 sigma.gam ~ dunif(0,10)
-tau.chla1 <- pow(sigma.chla1,-2) #LP
-sigma.chla1 ~ dunif(0,30) #LP
+# tau.chla1 <- pow(sigma.chla1,-2) #LP
+# sigma.chla1 ~ dunif(0,30) #LP
+beta.s.sst ~ dunif(-10,10) #LP
+beta.gam.sst ~ dunif(-10,10) #LP
 
 int.S ~ dnorm(0,1) 
 int.gam ~ dnorm(0,1)
@@ -45,18 +48,14 @@ mean.S <- 1/(1+exp(-(int.S)))
 
 
 nests <- nests[-c(which(is.na(nests$outcome)==TRUE)),]
-nests$outcome <- nests$outcome + 1 
-nests$year <- nests$year - 1995
-nests$year <- as.numeric(as.factor(nests$year))
-
-breed_pdo <- breed_pdo %>% filter(Year > 1995)
-breed_pdo <- breed_pdo %>% filter(Year != c(2014:2021)) #why does this not work? trying to make nests and pdo temporally compatible
-breed_pdo <- breed_pdo[order(breed_pdo$Year, decreasing = TRUE),]
-breed_pdo$Year <- breed_pdo$Year - 1995
-breed_pdo$Year <- as.numeric(as.factor(breed_pdo$Year))
+nests$outcome <- nests$outcome + 1
+# nests$year <- nests$year - 1995
+# nests$year <- as.numeric(as.factor(nests$year))
 
 
-data<-list(y = nests$outcome, year = nests$year, n.nests = dim(nests)[1], n.years = length(unique(nests$year)), breed_chla = breed_chla$chla) #note breed_chla here is just the chla value... should i keep the year?
+
+
+data<-list(y = nests$outcome, year = nests$year - 1995, year.rand = as.numeric(as.factor(nests$year)), n.nests = dim(nests)[1], n.years = length(unique(nests$year)), sst = breed_sst[,2])
 
 parameters<-c('int.S','mean.S')
 
