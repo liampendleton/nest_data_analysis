@@ -43,6 +43,7 @@ int.S ~ dnorm(0,1)
 int.gam ~ dnorm(0,1)
 
 mean.S <- 1/(1+exp(-(int.S)))
+mean.gam <- 1/(1+exp(-(int.gam)))
 
 }
 ",file = "nest_surv.txt")
@@ -62,7 +63,7 @@ data<-list(y = nests$outcome, year = nests$year - 1995,
            n.years = length(unique(nests$year)),
            sst = year_2_sst[,2])
 
-parameters<-c('int.S','mean.S') #add more parameters to track
+parameters<-c('int.S','mean.S', 'int.gam', 'mean.gam') #add more parameters to track
 
 inits<-function() {list(int.S = runif(1)) }
 
