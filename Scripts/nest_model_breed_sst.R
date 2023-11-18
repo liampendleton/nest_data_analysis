@@ -92,4 +92,17 @@ mcmcs<- out$samples
 MCMCtrace(mcmcs, params = 'int.S', type = 'both', ind = TRUE, pdf = TRUE,
           open_pdf = FALSE, filename = 'int.S.mcmcvis')
 
+# #WAIC
+waic_mod <- jags.samples(out$model,
+                         c("WAIC", "deviance"),
+                         type = "mean",
+                         n.iter = 10000,
+                         n.burnin = 1000,
+                         n.thin = 1)
+
+waic_mod$p_waic <- waic_mod$WAIC
+waic_mod$waic <- waic_mod$deviance + waic_mod$p_waic
+tmp <- sapply(waic_mod, sum)
+waic.m0 <- round(c(waic = tmp[["waic"]], p_waic = tmp[["p_waic"]]),1)
+
 
