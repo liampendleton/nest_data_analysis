@@ -14,15 +14,15 @@ high.fledge <- 54
 nestbox.init <- read.csv(here("Data","PI_Nest_Data_Full.csv"))
 
 #keep selected columns
-nestbox_data <- data.frame(nestbox.init$YEAR,nestbox.init$DATE,nestbox.init$BOX_ID,nestbox.init$Number_Eggs,nestbox.init$Number_Live_Chicks)
+nestbox_data <- data.frame(nestbox.init$X,nestbox.init$DATE,nestbox.init$BOX_ID,nestbox.init$Number_Eggs,nestbox.init$Number_Live_Chicks)
 colnames(nestbox_data) <- c("Year","Date","Box_ID","Number_Eggs","Number_Chicks")
 nestbox_data$Date <- as.Date(nestbox_data$Date,format="%Y-%m-%d")
 
 #all the date entries for nests checked on 6-18-2010 are entered as 6-18-2020, fixing here 
 nestbox_data$Date[which(nestbox_data$Date == "2020-06-18")] <- "2010-06-18"
 
-#delete 2023 for now 
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Year == 2023)),]
+# #delete 2023 for now 
+# nestbox_data <- nestbox_data[-c(which(nestbox_data$Year == 2023)),]
 
 #create a nest record ID 
 nestbox_data$Record <- paste(nestbox_data$Year,nestbox_data$Box_ID,sep="_")
@@ -132,6 +132,6 @@ output <- data.frame(year,nests2,outcome)
 #delete the nests that are being censored - do this once all done and we feel good about the data  
 #output <- output[-c(which(is.na(output$outcome == TRUE))), ]
 
-write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
+# write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
 
 
