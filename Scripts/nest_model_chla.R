@@ -1,5 +1,7 @@
 library(here)
-# install.packages(jagsUI)
+library(rtools)
+Sys.setenv(JAGS_HOME="C:/Program Files/JAGS/JAGS-4.3.0")
+install.packages(jagsUI)
 library(jagsUI)
 library(rjags)
 library(tidyverse)
@@ -19,8 +21,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.sst * sst[year[i]] #note addition of chla
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.sst * sst[year[i]] #same here; chla
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.sst * sst[year[i]] 
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.sst * sst[year[i]]
 
 } 
 
@@ -33,9 +35,7 @@ tau.S <- pow(sigma.S,-2)
 sigma.S ~ dunif(0,10) 
 tau.gam <- pow(sigma.gam,-2)
 sigma.gam ~ dunif(0,10)
-# tau.chla1 <- pow(sigma.chla1,-2) #LP
-# sigma.chla1 ~ dunif(0,30) #LP
-beta.s.sst ~ dunif(-10,10) #LP
+beta.S.sst ~ dunif(-10,10) #LP
 beta.gam.sst ~ dunif(-10,10) #LP
 
 int.S ~ dnorm(0,1) 
