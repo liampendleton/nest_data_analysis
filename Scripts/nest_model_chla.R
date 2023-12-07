@@ -5,7 +5,8 @@ library(rjags)
 library(tidyverse)
 library(MCMCvis)
 
-#read in data 
+# read in data
+# make sure to read in chla data from chla.R
 nests <- read.csv(here("Data","model_input.csv"))
 
 
@@ -35,14 +36,17 @@ for(y in 1:n.years){  #random effects to explain residual annual variation
 # vectorize chla data
 
 # address first time point
-est.chla[1] ~ dnorm(0, 0.001) #estimated first value of chla dataset
-expd.chla[1] <- exp(est.chla[1]) #exponentiating est.chla value; expected value of chla in normal space
+est.chla[1] ~ dnorm(0, tau.chla) #estimated first value of chla dataset
+expd.chla[1] <- exp(est.chla[1]) #exponentiating est.chla value; expected value of chla
 
 #loop over remaining months/years
 for (y in 2:total.chla){
-  est.chla[y] ~ dnorm(est.chla[y-1], inv_q)
-  expd.chla[y] <- exp(est.chla[y])
+  est.chla[y] ~ dnorm(est.chla[y-1], tau.chla)
+  expd.chla[y] <- exp(est.chla[y]) 
 }
+
+
+#add in code for filtering full chla dataset into respective time scale
 
 ##############
 ### Priors ###
@@ -55,7 +59,8 @@ tau.chla <- pow(sigma.chla,-2) #LP
 sigma.chla ~ dunif(0,30) #LP
 beta.S.chla ~ dunif(-10,10) #LP
 beta.gam.chla ~ dunif(-10,10) #LP
-inv_q ~ dgamma(0.001, 0.001) # prior on the process precision; LP
+tau.chla <- pow(sigma.chla,-2) #LP
+sigma.chla ~ dunif(0,30) #LP
 
 
 int.S ~ dnorm(0,1) 
@@ -71,8 +76,9 @@ mean.gam <- 1/(1+exp(-(int.gam)))
 ### Data ###
 
 # Make sure to run "source" on chla.R file
-est.chla <- t(as.matrix(chla[,2:13]))
-est.chla <- log(as.numeric(est.chla))
+est.chla <- t(as.matrix(chla[,2:13])) #vectorize
+est.chla <- log(as.numeric(est.chla)) #log of observed chla concentration
+expd.chla <- est.chla
 
 nests <- nests[-c(which(is.na(nests$outcome)==TRUE)),]
 nests$outcome <- nests$outcome + 1
@@ -81,8 +87,7 @@ data<-list(y = nests$outcome, year = nests$year - 1995,
            year.rand = as.numeric(as.factor(nests$year)),
            n.nests = dim(nests)[1], 
            n.years = length(unique(nests$year)),
-           total.chla = est.chla
-           )
+           total.chla = est.chla)
 
 parameters<-c('int.S','mean.S', 'int.gam', 'mean.gam') #add more parameters to track
 
