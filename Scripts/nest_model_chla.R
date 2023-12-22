@@ -21,36 +21,60 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.chla * chla[year[i]] #LP
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.chla * chla[year[i]] #LP
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.chla * chla.1[year[i]] #LP
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.chla * chla.1[year[i]] #LP
 
 } 
 
-for(y in 1:n.years){  #random effects to explain residual annual variation 
-  eps.S[y] ~ dnorm(0,tau.S) 
-  eps.gam[y] ~ dnorm(0,tau.gam)
+for(z in 1:n.years){  #random effects to explain residual annual variation 
+  eps.S[z] ~ dnorm(0,tau.S) 
+  eps.gam[z] ~ dnorm(0,tau.gam)
 } 
+
 
 ####################################
 ### Addressing missing chla data ###
-# vectorize chla data
 
-# address first time point
-est.chla[1] ~ dnorm(0, tau.chla) #estimated first value of chla dataset
-expd.chla[1] <- exp(est.chla[1]) #exponentiating est.chla value; expected value of chla
-
+l.est.chla[1] ~ dnorm(int.chla, tau.chla) #estimated first value of chla dataset
 #loop over remaining months/years
-for (y in 2:total.chla){
-  est.chla[y] ~ dnorm(est.chla[y-1], tau.chla)
-  expd.chla[y] <- exp(est.chla[y]) 
+for (q in 2:total.chla){
+  l.est.chla[q] ~ dnorm(l.est.chla[q-1], tau.chla)
 }
 
+# address first time point
+for(j in 1:total.chla){
+  real.chla[j] <- exp(l.est.chla[j]) #exponentiating est.chla value; expected value of chla
+}
 
-#add in code for filtering full chla dataset into respective time scale
+## Address different timescales
+# full-year; May(t-1):Apr(t)
+for(p in 1:28){
+  chla.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
+}
 
+# full-year; Oct(t-1):Sep(t)
+for(p in 1:28){
+  chla.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
+}
+
+# winter; Oct(t-1):Mar(t)
+for(p in 1:28){
+  chla.3[p] <- mean(real.chla[((p*12)-6) : ((p*12)-1)])
+}
+
+# pre-breed; Jan(t):Apr(t)
+for(p in 1:28){
+  chla.4[p] <- mean(real.chla[((p*12)-3) : (p*12)])
+}
+
+# breed; May(t):Sep(t)
+for(p in 1:28){
+  chla.5[p] <- mean(real.chla[((p*12)+1) : ((p*12)+5)])
+}
 ##############
 ### Priors ###
 
+int.chla ~ dnorm(0,1)
 tau.S <- pow(sigma.S,-2)
 sigma.S ~ dunif(0,10) 
 tau.gam <- pow(sigma.gam,-2)
@@ -59,8 +83,8 @@ tau.chla <- pow(sigma.chla,-2) #LP
 sigma.chla ~ dunif(0,30) #LP
 beta.S.chla ~ dunif(-10,10) #LP
 beta.gam.chla ~ dunif(-10,10) #LP
-tau.chla <- pow(sigma.chla,-2) #LP
-sigma.chla ~ dunif(0,30) #LP
+#tau.chla <- pow(sigma.chla,-2) #LP
+#sigma.chla ~ dunif(0,30) #LP
 
 
 int.S ~ dnorm(0,1) 
@@ -76,20 +100,30 @@ mean.gam <- 1/(1+exp(-(int.gam)))
 ### Data ###
 
 # Make sure to run "source" on chla.R file
-est.chla <- t(as.matrix(chla[,2:13])) #vectorize
-est.chla <- log(as.numeric(est.chla)) #log of observed chla concentration
-expd.chla <- est.chla
+chla.s1 <- chla[,2:13]
+chla.s2 <- as.matrix(chla.s1)
+chla.s3 <- t(chla.s2)
+chla.s4 <- as.numeric(chla.s3)
+chla.s5 <- c(rep(NA,20),chla.s4)
+chla.s6 <- c(chla.s5,rep(NA,4))
+est.chla <- chla.s6
+l.est.chla <- log(est.chla)
+
 
 nests <- nests[-c(which(is.na(nests$outcome)==TRUE)),]
 nests$outcome <- nests$outcome + 1
 
-data<-list(y = nests$outcome, year = nests$year - 1995,
+nests$year.new <- nests$year - 1995
+
+data<-list(y = nests$outcome, year = nests$year.new,
            year.rand = as.numeric(as.factor(nests$year)),
            n.nests = dim(nests)[1], 
            n.years = length(unique(nests$year)),
-           total.chla = est.chla)
+           n.years.new = max(nests$year.new),
+           total.chla = length(est.chla),
+           l.est.chla = l.est.chla)
 
-parameters<-c('int.S','mean.S', 'int.gam', 'mean.gam') #add more parameters to track
+parameters<-c('int.S','mean.S', 'int.gam', 'mean.gam','real.chla','chla.1') #change out "chla.x" to any of the five timeframes
 
 inits<-function() {list(int.S = runif(1)) }
 
@@ -109,6 +143,9 @@ out <- jagsUI::jags(data = data ,
                     n.burnin = 1000,
                     n.adapt = 100)
 
+#code to examine the chla predictions by month (means only)
+plot(1:332,out$summary[5:336,1])
+
 # Extracting samples from MCMC
 out$samples
 
@@ -127,7 +164,7 @@ waic_mod <- jags.samples(out$model,
                          type = "mean",
                          n.iter = 10000,
                          n.burnin = 1000,
-                         n.thin = 1)
+                         n.thin = 1, parameters = parameters)
 
 waic_mod$p_waic <- waic_mod$WAIC
 waic_mod$waic <- waic_mod$deviance + waic_mod$p_waic
