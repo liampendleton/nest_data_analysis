@@ -1,0 +1,37 @@
+---
+title: "README"
+author: "Liam Pendleton"
+date: "2023-11-14"
+output: html_document
+---
+
+## *The influence of environmental conditions on Pigeon Guillemot breeding success in the Salish Sea* 
+
+#### Liam C. Pendleton, Lee Robinson, Eric L. Wagner, Scott F. Pearson, Susan M. Thomas, Sarah J. Converse
+
+##### Please contact Liam Pendleton at pendle@uw.edu for questions about the code or data.
+
+##### Secondary contact: Sarah Converse (sconver@usgs.gov)
+
+________________________________________________________________________________
+
+## Abstract
+
+Seabird population dynamics are tightly linked with conditions in marine foraging habitats. Marine environmental conditions have direct effects on prey abundance and quality and can influence demographic outcomes. We evaluated the influence of marine conditions on breeding success of Pigeon Guillemots (Cepphus columba) using a long-term data set from Protection Island, Washington, USA. The Pigeon Guillemot has been identified as an indicator species in the Puget Sound region, but the relationship between marine conditions and guillemot breeding success is not well understood. We evaluated the effects of sea surface temperature, chlorophyll-a concentration, the Pacific Decadal Oscillation, and the North Pacific Gyre Oscillation on two metrics of breeding success: the probability that a nest produces at least one chick and the probability that a nest produces two chicks, given it produced at least one. We evaluated effects of oceanographic covariates across five temporal scales to identify periods in which particular oceanographic conditions may be most biologically significant. Our results will inform the relationship between marine conditions and Pigeon Guillemot population dynamics, leading to a better understanding of Pigeon Guillemots as an indicator species in Puget Sound.
+
+### Table of Contents
+
+#### [Scripts](./scripts)
+This folder contains the scripts necessary to read in and format nest monitoring data, covariate data, and to run all models involved in analyses.
+
+#### [Data](./Data)
+This folder contains raw data including nest monitoring data and covariate data.
+
+### Required Packages and Versions Used
+
+
+### How to Use this Repository
+
+
+
+
