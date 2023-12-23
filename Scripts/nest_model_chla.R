@@ -48,27 +48,27 @@ for(j in 1:total.chla){
 
 ## Address different timescales
 # full-year; May(t-1):Apr(t)
-for(p in 1:28){
+for(p in 1:n.years.new){
   chla.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
 }
 
 # full-year; Oct(t-1):Sep(t)
-for(p in 1:28){
+for(p in 1:n.years.new){
   chla.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
 }
 
 # winter; Oct(t-1):Mar(t)
-for(p in 1:28){
+for(p in 1:n.years.new){
   chla.3[p] <- mean(real.chla[((p*12)-6) : ((p*12)-1)])
 }
 
 # pre-breed; Jan(t):Apr(t)
-for(p in 1:28){
+for(p in 1:n.years.new){
   chla.4[p] <- mean(real.chla[((p*12)-3) : (p*12)])
 }
 
 # breed; May(t):Sep(t)
-for(p in 1:28){
+for(p in 1:(n.years.new-1)){
   chla.5[p] <- mean(real.chla[((p*12)+1) : ((p*12)+5)])
 }
 ##############
@@ -105,7 +105,7 @@ chla.s2 <- as.matrix(chla.s1)
 chla.s3 <- t(chla.s2)
 chla.s4 <- as.numeric(chla.s3)
 chla.s5 <- c(rep(NA,20),chla.s4)
-chla.s6 <- c(chla.s5,rep(NA,4))
+chla.s6 <- c(chla.s5,rep(NA,10))
 est.chla <- chla.s6
 l.est.chla <- log(est.chla)
 
@@ -170,6 +170,3 @@ waic_mod$p_waic <- waic_mod$WAIC
 waic_mod$waic <- waic_mod$deviance + waic_mod$p_waic
 tmp <- sapply(waic_mod, sum)
 waic.m0 <- round(c(waic = tmp[["waic"]], p_waic = tmp[["p_waic"]]),1)
-
-
-

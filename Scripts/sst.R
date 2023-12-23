@@ -144,8 +144,7 @@ colnames(winter_sst) <- c("Year", "SST")
 
 ####
 #clean things up in environment
-rm(sst)
-rm(pi_full_sst)
+
 rm(winter96)
 rm(winter97)
 rm(winter98)

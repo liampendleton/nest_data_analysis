@@ -190,8 +190,7 @@ colnames(winter_npgo) <- c("Year", "NPGO")
 
 ####
 #clean things up in environment
-rm(npgo)
-rm(pi_full_npgo)
+
 rm(winter96)
 rm(winter97)
 rm(winter98)

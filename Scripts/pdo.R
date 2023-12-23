@@ -149,8 +149,7 @@ colnames(winter_pdo) <- c("Year", "PDO")
 
 ####
 #clean things up in environment
-rm(pdo)
-rm(pi_full_pdo)
+
 rm(winter96)
 rm(winter97)
 rm(winter98)
