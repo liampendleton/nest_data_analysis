@@ -1,6 +1,7 @@
 library(here)
 library(tidyverse)
 
+function(pdo){
 pdo <- read.csv(here("Data", "PDO.csv"))
 
 ####
@@ -147,6 +148,8 @@ winter_pdo$`pdo_holder[1:28]` <- rowMeans(winter_pdo[,2:7], na.rm=TRUE)
 winter_pdo <- winter_pdo[,c(1,8)]
 colnames(winter_pdo) <- c("Year", "PDO")
 
+list = c( ) 
+}
 ####
 #clean things up in environment
 
@@ -237,5 +240,5 @@ rm(full.2.21)
 rm(full.2.22)
 rm(full.2.23)
 rm(pi_year_rnames)
-rm(pi_full_pdo)
+#rm(pi_full_pdo)
 

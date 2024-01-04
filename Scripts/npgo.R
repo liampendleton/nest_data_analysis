@@ -87,6 +87,14 @@ full21 <- cbind(pi_full_npgo[26,6:13], pi_full_npgo[27,2:5])
 full22 <- cbind(pi_full_npgo[27,6:13], pi_full_npgo[28,2:5])
 full23 <- cbind(pi_full_npgo[28,6:13], pi_full_npgo[29,2:5])
 
+#create full vector from May of 1995 through September of 2023 
+pi_full_npgo1 <- pi_full_npgo[,-c(1,14)]
+pi_full_npgo2 <- as.matrix(pi_full_npgo1)
+pi_full_npgo3 <- t(pi_full_npgo2)
+pi_full_npgo4 <- as.numeric(pi_full_npgo3) #this is the vector from January of 1995 to December of 2023 
+pi_full_npgo5 <- pi_full_npgo4[-c(1:4,346:348)] 
+
+
 pi_year_rnames <- seq(1996, 2023, 1)
 year_1_npgo <- rbind(full96, full97, full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22, full23)
 year_1_npgo <- cbind(pi_year_rnames, year_1_npgo)

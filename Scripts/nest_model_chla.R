@@ -5,6 +5,8 @@ library(rjags)
 library(tidyverse)
 library(MCMCvis)
 
+source(here("Scripts","chla.r"))
+
 # read in data
 # make sure to read in chla data from chla.R
 nests <- read.csv(here("Data","model_input.csv"))
@@ -99,6 +101,14 @@ mean.gam <- 1/(1+exp(-(int.gam)))
 ############
 ### Data ###
 
+source(here("scripts","pdo.r"))
+#you are writing out each of your different pdo covariates from the function 
+pdomayseptyr <- pdo()$pdo1 #here you're running the function from pdo and saving only the vector of 341 
+pdomayseptyr <- pdo()$pdo2 #here you're running the function from pdo and saving only the vector of 341 
+pdomayseptyr <- pdo()$pdo3 #here you're running the function from pdo and saving only the vector of 341 
+pdomayseptyr <- pdo()$pdo4 #here you're running the function from pdo and saving only the vector of 341 
+
+
 # Make sure to run "source" on chla.R file
 chla.s1 <- chla[,2:13]
 chla.s2 <- as.matrix(chla.s1)
@@ -106,7 +116,7 @@ chla.s3 <- t(chla.s2)
 chla.s4 <- as.numeric(chla.s3)
 chla.s5 <- c(rep(NA,20),chla.s4)
 chla.s6 <- c(chla.s5,rep(NA,10))
-est.chla <- chla.s6
+est.chla <- chla.s6  #these data go from May of 1995 through October of 2023
 l.est.chla <- log(est.chla)
 
 
