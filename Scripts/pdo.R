@@ -1,19 +1,27 @@
 library(here)
 library(tidyverse)
 
-function(pdo){
+#create a function that can be called on to process and show average annual PDO values from 1996-2023
+pdo <- function(pdo){
 pdo <- read.csv(here("Data", "PDO.csv"))
 
 ####
-#PDO full-year; Jan-Dec
-pi_full_pdo <- pdo[which(pdo$Year >= 1995),]
-pi_full_pdo[pi_full_pdo == 99.99] <- NA
-pdo_holder <- rep(NA, nrow(pi_full_pdo))
+#PDO setup
+pi_full_pdo <- pdo[which(pdo$Year >= 1995),] #all data at and after '95
+pi_full_pdo[pi_full_pdo == 99.99] <- NA #assign NA to 99.99
 
-pi_full_pdo <- cbind(pi_full_pdo, pdo_holder)
-pi_full_pdo$pdo_holder <- rowMeans(pi_full_pdo[,2:13], na.rm=TRUE)
-year_1_pdo <- pi_full_pdo[,c(1, 14)]
-colnames(year_1_pdo) <- c("Year", "PDO")
+#save vectorized version of pdo for later
+pdo_vec <- pi_full_pdo[,2:13] #get rid of year column
+pdo_vec <- as.matrix(pdo.vec)
+pdo_vec <- t(pdo.vec)
+pdo_vec <- as.numeric(pdo.vec)
+pdo_vec <- pdo.vec[-c(1:4,346:348)] #remove January through April of 1995 and October through December of 2023 
+
+pdo_holder <- rep(NA, nrow(pi_full_pdo)) #create column for future filling-in of annual values
+pi_full_pdo <- cbind(pi_full_pdo, pdo_holder) #merge dataset with placeholder column
+pi_full_pdo$pdo_holder <- rowMeans(pi_full_pdo[,2:13], na.rm=TRUE) #fill in annual average values
+year_1_pdo <- pi_full_pdo[,c(1, 14)] #isolate years and annual average values
+colnames(year_1_pdo) <- c("Year", "PDO") #name columns
 
 ####
 #PDO full-year; May(t-1)-April(t)
@@ -148,97 +156,10 @@ winter_pdo$`pdo_holder[1:28]` <- rowMeans(winter_pdo[,2:7], na.rm=TRUE)
 winter_pdo <- winter_pdo[,c(1,8)]
 colnames(winter_pdo) <- c("Year", "PDO")
 
-list = c( ) 
+return(list = c(pdo1 = pdo_vec,
+                pdo2 = year_1_pdo,
+                pdo3 = year_2_pdo,
+                pdo4 = pre_pdo,
+                pdo5 = breed_pdo,
+                pdo6 = winter_pdo))
 }
-####
-#clean things up in environment
-
-rm(winter96)
-rm(winter97)
-rm(winter98)
-rm(winter99)
-rm(winter00)
-rm(winter01)
-rm(winter02)
-rm(winter03)
-rm(winter04)
-rm(winter05)
-rm(winter06)
-rm(winter07)
-rm(winter08)
-rm(winter09)
-rm(winter10)
-rm(winter11)
-rm(winter12)
-rm(winter13)
-rm(winter14)
-rm(winter15)
-rm(winter16)
-rm(winter17)
-rm(winter18)
-rm(winter19)
-rm(winter20)
-rm(winter21)
-rm(winter22)
-rm(winter23)
-rm(pdo_holder)
-rm(pi_winter_rnames)
-rm(full96)
-rm(full97)
-rm(full98)
-rm(full99)
-rm(full00)
-rm(full01)
-rm(full02)
-rm(full03)
-rm(full04)
-rm(full05)
-rm(full06)
-rm(full07)
-rm(full08)
-rm(full09)
-rm(full10)
-rm(full11)
-rm(full12)
-rm(full13)
-rm(full14)
-rm(full15)
-rm(full16)
-rm(full17)
-rm(full18)
-rm(full19)
-rm(full20)
-rm(full21)
-rm(full22)
-rm(full23)
-rm(full.2.96)
-rm(full.2.97)
-rm(full.2.98)
-rm(full.2.99)
-rm(full.2.00)
-rm(full.2.01)
-rm(full.2.02)
-rm(full.2.03)
-rm(full.2.04)
-rm(full.2.05)
-rm(full.2.06)
-rm(full.2.07)
-rm(full.2.08)
-rm(full.2.09)
-rm(full.2.10)
-rm(full.2.11)
-rm(full.2.12)
-rm(full.2.13)
-rm(full.2.14)
-rm(full.2.15)
-rm(full.2.16)
-rm(full.2.17)
-rm(full.2.18)
-rm(full.2.19)
-rm(full.2.20)
-rm(full.2.21)
-rm(full.2.22)
-rm(full.2.23)
-rm(pi_year_rnames)
-#rm(pi_full_pdo)
-

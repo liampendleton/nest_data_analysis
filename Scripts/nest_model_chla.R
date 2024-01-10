@@ -102,11 +102,17 @@ mean.gam <- 1/(1+exp(-(int.gam)))
 ### Data ###
 
 source(here("scripts","pdo.r"))
-#you are writing out each of your different pdo covariates from the function 
-pdomayseptyr <- pdo()$pdo1 #here you're running the function from pdo and saving only the vector of 341 
-pdomayseptyr <- pdo()$pdo2 #here you're running the function from pdo and saving only the vector of 341 
-pdomayseptyr <- pdo()$pdo3 #here you're running the function from pdo and saving only the vector of 341 
-pdomayseptyr <- pdo()$pdo4 #here you're running the function from pdo and saving only the vector of 341 
+#Writing out each different PDO covariates from the function 
+pdo.full <- pdo()$pdo1 #getting full vector of 341; May '95 - Sep '23
+pdo.mayapr <- pdo()$pdo2 #full-year first version; May(t-1) - Apr(t)
+pdo.octsep <- pdo()$pdo3 #full-year second version; Oct(t-1) - Sep(t) 
+pdo.winter <- pdo()$pdo4 #winter; Oct(t-1) - Mar(t)
+pdo.prebreed <- pdo()$pdo5 #pre-breeding season; Jan(t) - Apr(t)
+pdo.breed <- pdo()$pdo6 #breeding season; May(t) - Sep(t)
+
+source(here("Scripts", "npgo.r"))
+
+
 
 
 # Make sure to run "source" on chla.R file
