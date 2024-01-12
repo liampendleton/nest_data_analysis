@@ -12,10 +12,10 @@ pi_full_pdo[pi_full_pdo == 99.99] <- NA #assign NA to 99.99
 
 #save vectorized version of pdo for later
 pdo_vec <- pi_full_pdo[,2:13] #get rid of year column
-pdo_vec <- as.matrix(pdo.vec)
-pdo_vec <- t(pdo.vec)
-pdo_vec <- as.numeric(pdo.vec)
-pdo_vec <- pdo.vec[-c(1:4,346:348)] #remove January through April of 1995 and October through December of 2023 
+pdo_vec <- as.matrix(pdo_vec)
+pdo_vec <- t(pdo_vec)
+pdo_vec <- as.numeric(pdo_vec)
+pdo_vec <- pdo_vec[-c(1:4,346:348)] #remove January through April of 1995 and October through December of 2023 
 
 pdo_holder <- rep(NA, nrow(pi_full_pdo)) #create column for future filling-in of annual values
 pi_full_pdo <- cbind(pi_full_pdo, pdo_holder) #merge dataset with placeholder column
