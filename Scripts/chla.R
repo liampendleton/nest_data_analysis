@@ -28,6 +28,11 @@ for(i in 1:length(chla1.monthly)){
 
 chla1.monthly[sapply(chla1.monthly, is.nan)] <- NA #change NaN to NA
 
+#Months of Feb and March of 2008 and May of 2009 are missing from chla1
+#we are adding NAs here to represent those missing months 
+chla1.monthly.new <- c(chla1.monthly[1:125],NA,NA,chla1.monthly[126:138],NA,chla1.monthly[139:157])
+chla1.monthly <- chla1.monthly.new
+
 #compile monthly averages for chla2
 for(j in 1:length(chla2.monthly)){
   vals2 <- chla2 %>% filter(time == unique(chla2$time)[j])
