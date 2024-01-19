@@ -5,13 +5,11 @@ library(rjags)
 library(tidyverse)
 library(MCMCvis)
 
-source(here("Scripts","chla.r"))
-
 # read in data
 # make sure to read in chla data from chla.R
 nests <- read.csv(here("Data","model_input.csv"))
 
-
+# model
 cat("
 model {
 
@@ -103,28 +101,33 @@ mean.gam <- 1/(1+exp(-(int.gam)))
 
 source(here("scripts","pdo.r"))
 #Writing out each different PDO covariates from the function 
-pdo.full <- pdo()$pdo1 #getting full vector of 341; May '95 - Sep '23
-pdo.mayapr <- pdo()$pdo2 #full-year first version; May(t-1) - Apr(t)
-pdo.octsep <- pdo()$pdo3 #full-year second version; Oct(t-1) - Sep(t) 
-pdo.winter <- pdo()$pdo4 #winter; Oct(t-1) - Mar(t)
-pdo.prebreed <- pdo()$pdo5 #pre-breeding season; Jan(t) - Apr(t)
-pdo.breed <- pdo()$pdo6 #breeding season; May(t) - Sep(t)
+pdo.year.1 <- pdo.fxn()$pdo1 #full-year first version; May(t-1) - Apr(t)
+pdo.year.2 <- pdo.fxn()$pdo2 #full-year second version; Oct(t-1) - Sep(t) 
+pdo.winter <- pdo.fxn()$pdo3 #winter; Oct(t-1) - Mar(t)
+pdo.prebreed <- pdo.fxn()$pdo4 #pre-breeding season; Jan(t) - Apr(t)
+pdo.breed <- pdo.fxn()$pdo5 #breeding season; May(t) - Sep(t)
 
 source(here("Scripts", "npgo.r"))
+#Writing out each different NPGO covariates from the function 
+npgo.year.1 <- npgo.fxn()$npgo1
+npgo.year.2 <- npgo.fxn()$npgo2
+npgo.winter <- npgo.fxn()$npgo3
+npgo.prebreed <- npgo.fxn()$npgo4
+npgo.breed <- npgo.fxn()$npgo5
 
+source(here("Scripts", "sst.r"))
+#Writing out each different SST covariates from the function 
+sst.year.1 <- sst.fxn()$sst1
+sst.year.2 <- sst.fxn()$sst2
+sst.winter <- sst.fxn()$sst3
+sst.prebreed <- sst.fxn()$sst4
+sst.breed <- sst.fxn()$sst5
 
-
-
-# Make sure to run "source" on chla.R file
-chla.s1 <- chla[,2:13]
-chla.s2 <- as.matrix(chla.s1)
-chla.s3 <- t(chla.s2)
-chla.s4 <- as.numeric(chla.s3)
-chla.s5 <- c(rep(NA,20),chla.s4)
-chla.s6 <- c(chla.s5,rep(NA,10))
-est.chla <- chla.s6  #these data go from May of 1995 through October of 2023
+source(here("Scripts", "chla.r"))
+chla.s1 <- c(rep(NA,20),chla.data)
+chla.s2 <- c(chla.s1,rep(NA,10))
+est.chla <- chla.s2  #these data now go from May of 1995 through October of 2023
 l.est.chla <- log(est.chla)
-
 
 nests <- nests[-c(which(is.na(nests$outcome)==TRUE)),]
 nests$outcome <- nests$outcome + 1

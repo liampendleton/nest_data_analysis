@@ -1,8 +1,7 @@
 library(here)
 library(tidyverse)
 
-
-#create a function that can be called on to process and show average annual PDO values from 1996-2023
+#create a function that can be called on to process and show average annual PDO values from 1995-2023
 pdo.fxn <- function(){
 pdo <- read.csv(here("Data", "PDO.csv"))
 
@@ -19,10 +18,9 @@ pdo_vec <- as.numeric(pdo_vec)
 pdo_vec <- pdo_vec[-c(1:4,346:348)] #remove January through April of 1995 and October through December of 2023 
 
 ## Address different timescales
-# full-year; May(t-1):Apr(t)
-pdo.1 <- pdo.2 <- pdo.3 <- pdo.4 <- rep(NA,28)
-pdo.5 <- rep(NA,27)
+pdo.1 <- pdo.2 <- pdo.3 <- pdo.4 <- pdo.5 <- rep(NA,28)
 
+# full-year; May(t-1):Apr(t)
 for(p in 1:28){
   pdo.1[p] <- mean(pdo_vec[((p*12)-11) : (p*12)])
 }
@@ -43,16 +41,14 @@ for(p in 1:28){
 }
 
 # breed; May(t):Sep(t)
-for(p in 1:(28-1)){
+for(p in 1:(28)){
   pdo.5[p] <- mean(pdo_vec[((p*12)+1) : ((p*12)+5)])
 }
-
 
 return(list(pdo1 = pdo.1,
             pdo2 = pdo.2,
             pdo3 = pdo.3,
             pdo4 = pdo.4,
             pdo5 = pdo.5,
-            pdo6 = pdo_vec)
-)
+            pdo6 = pdo_vec))
 }

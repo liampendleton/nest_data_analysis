@@ -1,235 +1,54 @@
 library(here)
 library(tidyverse)
 
+#create a function that can be called on to process and show average annual SST values from 1995-2023
+sst.fxn <- function(){
 sst <- read.csv(here("Data", "racerocks_mSST.csv"))
 
 ####
-#SST
-sst[sst == 999.99] <- NA #wouldn't want a value like that guiding our analyses
+#Format SST
+sst[sst == 999.99] <- NA #reformat NA
 pi_full_sst <- sst[which(sst$YEAR >= 1995),] #isolate years of interest
 
-sst_holder <- rep(NA, nrow(pi_full_sst))
+#save vectorized version of sst for later
+sst_vec <- pi_full_sst[,2:13] #get rid of year column
+sst_vec <- as.matrix(sst_vec)
+sst_vec <- t(sst_vec)
+sst_vec <- as.numeric(sst_vec)
+sst_vec <- sst_vec[-c(1:4,346:348)] #remove January through April of 1995 and October through December of 2023 
 
-####
-#SST full-year; May(t-1)-April(t)
-full96 <- cbind(pi_full_sst[1,6:13], pi_full_sst[2,2:5])
-full97 <- cbind(pi_full_sst[2,6:13], pi_full_sst[3,2:5])
-full98 <- cbind(pi_full_sst[3,6:13], pi_full_sst[4,2:5])
-full99 <- cbind(pi_full_sst[4,6:13], pi_full_sst[5,2:5])
-full00 <- cbind(pi_full_sst[5,6:13], pi_full_sst[6,2:5])
-full01 <- cbind(pi_full_sst[6,6:13], pi_full_sst[7,2:5])
-full02 <- cbind(pi_full_sst[7,6:13], pi_full_sst[8,2:5])
-full03 <- cbind(pi_full_sst[8,6:13], pi_full_sst[9,2:5])
-full04 <- cbind(pi_full_sst[9,6:13], pi_full_sst[10,2:5])
-full05 <- cbind(pi_full_sst[10,6:13], pi_full_sst[11,2:5])
-full06 <- cbind(pi_full_sst[11,6:13], pi_full_sst[12,2:5])
-full07 <- cbind(pi_full_sst[12,6:13], pi_full_sst[13,2:5])
-full08 <- cbind(pi_full_sst[13,6:13], pi_full_sst[14,2:5])
-full09 <- cbind(pi_full_sst[14,6:13], pi_full_sst[15,2:5])
-full10 <- cbind(pi_full_sst[15,6:13], pi_full_sst[16,2:5])
-full11 <- cbind(pi_full_sst[16,6:13], pi_full_sst[17,2:5])
-full12 <- cbind(pi_full_sst[17,6:13], pi_full_sst[18,2:5])
-full13 <- cbind(pi_full_sst[18,6:13], pi_full_sst[19,2:5])
-full14 <- cbind(pi_full_sst[19,6:13], pi_full_sst[20,2:5])
-full15 <- cbind(pi_full_sst[20,6:13], pi_full_sst[21,2:5])
-full16 <- cbind(pi_full_sst[21,6:13], pi_full_sst[22,2:5])
-full17 <- cbind(pi_full_sst[22,6:13], pi_full_sst[23,2:5])
-full18 <- cbind(pi_full_sst[23,6:13], pi_full_sst[24,2:5])
-full19 <- cbind(pi_full_sst[24,6:13], pi_full_sst[25,2:5])
-full20 <- cbind(pi_full_sst[25,6:13], pi_full_sst[26,2:5])
-full21 <- cbind(pi_full_sst[26,6:13], pi_full_sst[27,2:5])
-full22 <- cbind(pi_full_sst[27,6:13], pi_full_sst[28,2:5])
-full23 <- cbind(pi_full_sst[28,6:13], pi_full_sst[29,2:5])
+## Address different timescales
+sst.1 <- sst.2 <- sst.3 <- sst.4 <- sst.5 <- rep(NA,28)
 
-pi_year_rnames <- seq(1996, 2023, 1)
-year_1_sst <- rbind(full96, full97, full98, full99, full00, full01, full02, full03, full04, full05, full06, full07, full08, full09, full10, full11, full12, full13, full14, full15, full16, full17, full18, full19, full20, full21, full22, full23)
-year_1_sst <- cbind(pi_year_rnames, year_1_sst)
-year_1_sst <- cbind(year_1_sst, sst_holder[1:28])
+# full-year; May(t-1):Apr(t)
+for(p in 1:28){
+  sst.1[p] <- mean(sst_vec[((p*12)-11) : (p*12)])
+}
 
-year_1_sst$`sst_holder[1:28]` <- rowMeans(year_1_sst[,2:13], na.rm=TRUE)
-year_1_sst <- year_1_sst[,c(1,14)]
-colnames(year_1_sst) <- c("Year", "SST")
+# full-year; Oct(t-1):Sep(t)
+for(p in 1:28){
+  sst.2[p] <- mean(sst_vec[((p*12)-6) : ((p*12)+5)])
+}
 
-#SST full-year; Oct(t-1)-Sept(t)
-full.2.96 <- cbind(pi_full_sst[1,11:13], pi_full_sst[2,2:10])
-full.2.97 <- cbind(pi_full_sst[2,11:13], pi_full_sst[3,2:10])
-full.2.98 <- cbind(pi_full_sst[3,11:13], pi_full_sst[4,2:10])
-full.2.99 <- cbind(pi_full_sst[4,11:13], pi_full_sst[5,2:10])
-full.2.00 <- cbind(pi_full_sst[5,11:13], pi_full_sst[6,2:10])
-full.2.01 <- cbind(pi_full_sst[6,11:13], pi_full_sst[7,2:10])
-full.2.02 <- cbind(pi_full_sst[7,11:13], pi_full_sst[8,2:10])
-full.2.03 <- cbind(pi_full_sst[8,11:13], pi_full_sst[9,2:10])
-full.2.04 <- cbind(pi_full_sst[9,11:13], pi_full_sst[10,2:10])
-full.2.05 <- cbind(pi_full_sst[10,11:13], pi_full_sst[11,2:10])
-full.2.06 <- cbind(pi_full_sst[11,11:13], pi_full_sst[12,2:10])
-full.2.07 <- cbind(pi_full_sst[12,11:13], pi_full_sst[13,2:10])
-full.2.08 <- cbind(pi_full_sst[13,11:13], pi_full_sst[14,2:10])
-full.2.09 <- cbind(pi_full_sst[14,11:13], pi_full_sst[15,2:10])
-full.2.10 <- cbind(pi_full_sst[15,11:13], pi_full_sst[16,2:10])
-full.2.11 <- cbind(pi_full_sst[16,11:13], pi_full_sst[17,2:10])
-full.2.12 <- cbind(pi_full_sst[17,11:13], pi_full_sst[18,2:10])
-full.2.13 <- cbind(pi_full_sst[18,11:13], pi_full_sst[19,2:10])
-full.2.14 <- cbind(pi_full_sst[19,11:13], pi_full_sst[20,2:10])
-full.2.15 <- cbind(pi_full_sst[20,11:13], pi_full_sst[21,2:10])
-full.2.16 <- cbind(pi_full_sst[21,11:13], pi_full_sst[22,2:10])
-full.2.17 <- cbind(pi_full_sst[22,11:13], pi_full_sst[23,2:10])
-full.2.18 <- cbind(pi_full_sst[23,11:13], pi_full_sst[24,2:10])
-full.2.19 <- cbind(pi_full_sst[24,11:13], pi_full_sst[25,2:10])
-full.2.20 <- cbind(pi_full_sst[25,11:13], pi_full_sst[26,2:10])
-full.2.21 <- cbind(pi_full_sst[26,11:13], pi_full_sst[27,2:10])
-full.2.22 <- cbind(pi_full_sst[27,11:13], pi_full_sst[28,2:10])
-full.2.23 <- cbind(pi_full_sst[28,11:13], pi_full_sst[29,2:10])
+# winter; Oct(t-1):Mar(t)
+for(p in 1:28){
+  sst.3[p] <- mean(sst_vec[((p*12)-6) : ((p*12)-1)])
+}
 
-year_2_sst <- rbind(full.2.96, full.2.97, full.2.98, full.2.99, full.2.00, full.2.01, full.2.02, full.2.03, full.2.04, full.2.05, full.2.06, full.2.07, full.2.08, full.2.09, full.2.10, full.2.11, full.2.12, full.2.13, full.2.14, full.2.15, full.2.16, full.2.17, full.2.18, full.2.19, full.2.20, full.2.21, full.2.22, full.2.23)
-year_2_sst <- cbind(pi_year_rnames, year_2_sst)
-year_2_sst <- cbind(year_2_sst, sst_holder[1:28])
+# pre-breed; Jan(t):Apr(t)
+for(p in 1:28){
+  sst.4[p] <- mean(sst_vec[((p*12)-3) : (p*12)])
+}
 
-year_2_sst$`sst_holder[1:28]` <- rowMeans(year_2_sst[,2:13], na.rm=TRUE)
-year_2_sst <- year_2_sst[,c(1,14)]
-colnames(year_2_sst) <- c("Year", "SST")
+# breed; May(t):Sep(t)
+for(p in 1:(28-1)){
+  sst.5[p] <- mean(sst_vec[((p*12)+1) : ((p*12)+5)])
+}
 
-####
-#SST pre-breeding season; Jan-Apr
-pre_sst <- cbind(pi_full_sst[,1:5], sst_holder)
-pre_sst$sst_holder <- rowMeans(pre_sst[,2:5], na.rm=TRUE)
-pre_sst <- pre_sst[,c(1,6)]
-colnames(pre_sst) <- c("Year", "SST")
-
-####
-#SST breeding season; May - Sept
-breed_sst <- cbind(pi_full_sst[,c(1,6:10)], sst_holder)
-breed_sst$sst_holder <- rowMeans(breed_sst[,2:6], na.rm=TRUE)
-breed_sst <- breed_sst[,c(1,7)]
-colnames(breed_sst) <- c("Year", "SST")
-
-####
-#winter; Oct-Mar
-winter96 <- cbind(pi_full_sst[1,11:13], pi_full_sst[2,2:4])
-winter97 <- cbind(pi_full_sst[2,11:13], pi_full_sst[3,2:4])
-winter98 <- cbind(pi_full_sst[3,11:13], pi_full_sst[4,2:4])
-winter99 <- cbind(pi_full_sst[4,11:13], pi_full_sst[5,2:4])
-winter00 <- cbind(pi_full_sst[5,11:13], pi_full_sst[6,2:4])
-winter01 <- cbind(pi_full_sst[6,11:13], pi_full_sst[7,2:4])
-winter02 <- cbind(pi_full_sst[7,11:13], pi_full_sst[8,2:4])
-winter03 <- cbind(pi_full_sst[8,11:13], pi_full_sst[9,2:4])
-winter04 <- cbind(pi_full_sst[9,11:13], pi_full_sst[10,2:4])
-winter05 <- cbind(pi_full_sst[10,11:13], pi_full_sst[11,2:4])
-winter06 <- cbind(pi_full_sst[11,11:13], pi_full_sst[12,2:4])
-winter07 <- cbind(pi_full_sst[12,11:13], pi_full_sst[13,2:4])
-winter08 <- cbind(pi_full_sst[13,11:13], pi_full_sst[14,2:4])
-winter09 <- cbind(pi_full_sst[14,11:13], pi_full_sst[15,2:4])
-winter10 <- cbind(pi_full_sst[15,11:13], pi_full_sst[16,2:4])
-winter11 <- cbind(pi_full_sst[16,11:13], pi_full_sst[17,2:4])
-winter12 <- cbind(pi_full_sst[17,11:13], pi_full_sst[18,2:4])
-winter13 <- cbind(pi_full_sst[18,11:13], pi_full_sst[19,2:4])
-winter14 <- cbind(pi_full_sst[19,11:13], pi_full_sst[20,2:4])
-winter15 <- cbind(pi_full_sst[20,11:13], pi_full_sst[21,2:4])
-winter16 <- cbind(pi_full_sst[21,11:13], pi_full_sst[22,2:4])
-winter17 <- cbind(pi_full_sst[22,11:13], pi_full_sst[23,2:4])
-winter18 <- cbind(pi_full_sst[23,11:13], pi_full_sst[24,2:4])
-winter19 <- cbind(pi_full_sst[24,11:13], pi_full_sst[25,2:4])
-winter20 <- cbind(pi_full_sst[25,11:13], pi_full_sst[26,2:4])
-winter21 <- cbind(pi_full_sst[26,11:13], pi_full_sst[27,2:4])
-winter22 <- cbind(pi_full_sst[27,11:13], pi_full_sst[28,2:4])
-winter23 <- cbind(pi_full_sst[28,11:13], pi_full_sst[29,2:4])
-
-pi_winter_rnames <- seq(1996, 2023, 1)
-winter_sst <- rbind(winter96, winter97, winter98, winter99, winter00, winter01, winter02, winter03, winter04, winter05, winter06, winter07, winter08, winter09, winter10, winter11, winter12, winter13, winter14, winter15, winter16, winter17, winter18, winter19, winter20, winter21, winter22, winter23)
-winter_sst <- cbind(pi_winter_rnames, winter_sst)
-winter_sst <- cbind(winter_sst, sst_holder[1:28])
-
-winter_sst$`sst_holder[1:28]` <- rowMeans(winter_sst[,2:7], na.rm=TRUE)
-winter_sst <- winter_sst[,c(1,8)]
-colnames(winter_sst) <- c("Year", "SST")
-
-####
-#clean things up in environment
-
-rm(winter96)
-rm(winter97)
-rm(winter98)
-rm(winter99)
-rm(winter00)
-rm(winter01)
-rm(winter02)
-rm(winter03)
-rm(winter04)
-rm(winter05)
-rm(winter06)
-rm(winter07)
-rm(winter08)
-rm(winter09)
-rm(winter10)
-rm(winter11)
-rm(winter12)
-rm(winter13)
-rm(winter14)
-rm(winter15)
-rm(winter16)
-rm(winter17)
-rm(winter18)
-rm(winter19)
-rm(winter20)
-rm(winter21)
-rm(winter22)
-rm(winter23)
-rm(sst_holder)
-rm(pi_winter_rnames)
-rm(full96)
-rm(full97)
-rm(full98)
-rm(full99)
-rm(full00)
-rm(full01)
-rm(full02)
-rm(full03)
-rm(full04)
-rm(full05)
-rm(full06)
-rm(full07)
-rm(full08)
-rm(full09)
-rm(full10)
-rm(full11)
-rm(full12)
-rm(full13)
-rm(full14)
-rm(full15)
-rm(full16)
-rm(full17)
-rm(full18)
-rm(full19)
-rm(full20)
-rm(full21)
-rm(full22)
-rm(full23)
-rm(pi_full_rnames)
-rm(full.2.96)
-rm(full.2.97)
-rm(full.2.98)
-rm(full.2.99)
-rm(full.2.00)
-rm(full.2.01)
-rm(full.2.02)
-rm(full.2.03)
-rm(full.2.04)
-rm(full.2.05)
-rm(full.2.06)
-rm(full.2.07)
-rm(full.2.08)
-rm(full.2.09)
-rm(full.2.10)
-rm(full.2.11)
-rm(full.2.12)
-rm(full.2.13)
-rm(full.2.14)
-rm(full.2.15)
-rm(full.2.16)
-rm(full.2.17)
-rm(full.2.18)
-rm(full.2.19)
-rm(full.2.20)
-rm(full.2.21)
-rm(full.2.22)
-rm(full.2.23)
-rm(pi_year_rnames)
+return(list(sst1 = sst.1,
+            sst2 = sst.2,
+            sst3 = sst.3,
+            sst4 = sst.4,
+            sst5 = sst.5,
+            sst6 = sst_vec))
+}
