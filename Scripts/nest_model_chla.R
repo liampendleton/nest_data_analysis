@@ -21,8 +21,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.chla * chla.1[year[i]] #LP
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.chla * chla.1[year[i]] #LP
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.chla * chla.year.1[year[i]] #LP
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.chla * chla.year.1[year[i]] #LP
 
 } 
 
@@ -49,27 +49,27 @@ for(j in 1:total.chla){
 ## Address different timescales
 # full-year; May(t-1):Apr(t)
 for(p in 1:n.years.new){
-  chla.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
+  chla.year.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
 }
 
 # full-year; Oct(t-1):Sep(t)
 for(p in 1:n.years.new){
-  chla.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
+  chla.year.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
 }
 
 # winter; Oct(t-1):Mar(t)
 for(p in 1:n.years.new){
-  chla.3[p] <- mean(real.chla[((p*12)-6) : ((p*12)-1)])
+  chla.winter[p] <- mean(real.chla[((p*12)-6) : ((p*12)-1)])
 }
 
 # pre-breed; Jan(t):Apr(t)
 for(p in 1:n.years.new){
-  chla.4[p] <- mean(real.chla[((p*12)-3) : (p*12)])
+  chla.pre[p] <- mean(real.chla[((p*12)-3) : (p*12)])
 }
 
 # breed; May(t):Sep(t)
-for(p in 1:(n.years.new-1)){
-  chla.5[p] <- mean(real.chla[((p*12)+1) : ((p*12)+5)])
+for(p in 1:(n.years.new)){
+  chla.breed[p] <- mean(real.chla[((p*12)+1) : ((p*12)+5)])
 }
 ##############
 ### Priors ###
@@ -104,7 +104,7 @@ source(here("scripts","pdo.r"))
 pdo.year.1 <- pdo.fxn()$pdo1 #full-year first version; May(t-1) - Apr(t)
 pdo.year.2 <- pdo.fxn()$pdo2 #full-year second version; Oct(t-1) - Sep(t) 
 pdo.winter <- pdo.fxn()$pdo3 #winter; Oct(t-1) - Mar(t)
-pdo.prebreed <- pdo.fxn()$pdo4 #pre-breeding season; Jan(t) - Apr(t)
+pdo.pre <- pdo.fxn()$pdo4 #pre-breeding season; Jan(t) - Apr(t)
 pdo.breed <- pdo.fxn()$pdo5 #breeding season; May(t) - Sep(t)
 
 source(here("Scripts", "npgo.r"))
@@ -112,7 +112,7 @@ source(here("Scripts", "npgo.r"))
 npgo.year.1 <- npgo.fxn()$npgo1
 npgo.year.2 <- npgo.fxn()$npgo2
 npgo.winter <- npgo.fxn()$npgo3
-npgo.prebreed <- npgo.fxn()$npgo4
+npgo.pre <- npgo.fxn()$npgo4
 npgo.breed <- npgo.fxn()$npgo5
 
 source(here("Scripts", "sst.r"))
@@ -120,14 +120,13 @@ source(here("Scripts", "sst.r"))
 sst.year.1 <- sst.fxn()$sst1
 sst.year.2 <- sst.fxn()$sst2
 sst.winter <- sst.fxn()$sst3
-sst.prebreed <- sst.fxn()$sst4
+sst.pre <- sst.fxn()$sst4
 sst.breed <- sst.fxn()$sst5
 
 source(here("Scripts", "chla.r"))
-chla.s1 <- c(rep(NA,20),chla.data)
-chla.s2 <- c(chla.s1,rep(NA,10))
-est.chla <- chla.s2  #these data now go from May of 1995 through October of 2023
-l.est.chla <- log(est.chla)
+chla.s1 <- c(rep(NA,28),chla.data) #LP
+chla.s2 <- c(chla.s1,rep(NA,16))
+l.est.chla <- log(chla.s2)
 
 nests <- nests[-c(which(is.na(nests$outcome)==TRUE)),]
 nests$outcome <- nests$outcome + 1
@@ -142,7 +141,7 @@ data<-list(y = nests$outcome, year = nests$year.new,
            total.chla = length(est.chla),
            l.est.chla = l.est.chla)
 
-parameters<-c('int.S','mean.S', 'int.gam', 'mean.gam','real.chla','chla.1') #change out "chla.x" to any of the five timeframes
+parameters<-c('int.S','mean.S', 'int.gam', 'mean.gam', 'chla.year.1') #change out "chla.x" to any of the five timeframes
 
 inits<-function() {list(int.S = runif(1)) }
 
