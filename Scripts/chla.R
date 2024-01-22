@@ -3,6 +3,7 @@ library(tidyverse)
 library(dplyr)
 library(readr)
 
+chla.fxn <- function(){
 #####
 #Read in chla data
 chla1 <- read_csv(here("Data", "erdSW2018chlamday_29f3_6396_25da.csv"), na = c("NaN", "NA")) #this dataset begins Sep 1997 and ends Dec 2010
@@ -42,11 +43,5 @@ chla2.monthly[sapply(chla2.monthly, is.nan)] <- NA
 
 chla.data <- c(chla1.monthly, chla2.monthly)
 
-rm(chla1)
-rm(chla2)
-rm(chla1.monthly)
-rm(chla2.monthly)
-rm(vals1)
-rm(vals2)
-rm(i)
-rm(j)
+return(list(chla.data = chla.data))
+}
