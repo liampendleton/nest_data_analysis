@@ -21,8 +21,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.chla * chla.year.1[year[i]] #LP
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.chla * chla.year.1[year[i]] #LP
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.cov * chla.winter[year[i]]
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.cov * chla.winter[year[i]]
 
 } 
 
@@ -79,12 +79,10 @@ tau.S <- pow(sigma.S,-2)
 sigma.S ~ dunif(0,10) 
 tau.gam <- pow(sigma.gam,-2)
 sigma.gam ~ dunif(0,10)
-tau.chla <- pow(sigma.chla,-2) #LP
-sigma.chla ~ dunif(0,30) #LP
-beta.S.chla ~ dunif(-10,10) #LP
-beta.gam.chla ~ dunif(-10,10) #LP
-#tau.chla <- pow(sigma.chla,-2) #LP
-#sigma.chla ~ dunif(0,30) #LP
+tau.chla <- pow(sigma.chla,-2)
+sigma.chla ~ dunif(0,30)
+beta.S.cov ~ dunif(-10,10)
+beta.gam.cov ~ dunif(-10,10)
 
 
 int.S ~ dnorm(0,1) 
@@ -144,7 +142,7 @@ data<-list(y = nests$outcome, year = nests$year.new,
            total.chla = length(l.est.chla),
            l.est.chla = l.est.chla)
 
-parameters<-c('int.S','mean.S', 'int.gam', 'mean.gam', 'chla.year.1') #change out "chla.x" to any of the five timeframes
+parameters<-c('int.S','mean.S', 'int.gam', 'mean.gam', 'chla.winter') #change out "cov.x" to any of the five timeframes
 
 inits<-function() {list(int.S = runif(1)) }
 
@@ -180,6 +178,7 @@ MCMCtrace(mcmcs, params = 'int.S', type = 'both', ind = TRUE, pdf = TRUE,
           open_pdf = FALSE, filename = 'int.S.mcmcvis')
 
 # WAIC
+# This probably won't run along with everything else. Might need to select and run individually after running model.
 waic_mod <- jags.samples(out$model,
                          c("WAIC", "deviance"),
                          type = "mean",
@@ -191,3 +190,4 @@ waic_mod$p_waic <- waic_mod$WAIC
 waic_mod$waic <- waic_mod$deviance + waic_mod$p_waic
 tmp <- sapply(waic_mod, sum)
 waic.m0 <- round(c(waic = tmp[["waic"]], p_waic = tmp[["p_waic"]]),1)
+print(waic.m0)
