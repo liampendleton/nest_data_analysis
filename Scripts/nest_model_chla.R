@@ -126,7 +126,8 @@ sst.breed <- sst.fxn()$sst5
 source(here("Scripts", "chla.r"))
 #adding NAs at the beginning and end of chla because 
 #months of May 95 thru August 97 are missing from the front
-#and months of June 22 thru Sept 23 are missing from the end  
+#and months of June 22 thru Sept 23 are missing from the end
+chla.data <- chla.fxn()$chla.data
 chla.s1 <- c(rep(NA,28),chla.data,rep(NA,16)) #LP
 l.est.chla <- log(chla.s1)
 
