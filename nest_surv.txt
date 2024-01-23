@@ -9,8 +9,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.chla * chla.1[year[i]] #LP
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.chla * chla.1[year[i]] #LP
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.cov * chla.winter[year[i]]
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.cov * chla.winter[year[i]]
 
 } 
 
@@ -37,27 +37,27 @@ for(j in 1:total.chla){
 ## Address different timescales
 # full-year; May(t-1):Apr(t)
 for(p in 1:n.years.new){
-  chla.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
+  chla.year.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
 }
 
 # full-year; Oct(t-1):Sep(t)
 for(p in 1:n.years.new){
-  chla.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
+  chla.year.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
 }
 
 # winter; Oct(t-1):Mar(t)
 for(p in 1:n.years.new){
-  chla.3[p] <- mean(real.chla[((p*12)-6) : ((p*12)-1)])
+  chla.winter[p] <- mean(real.chla[((p*12)-6) : ((p*12)-1)])
 }
 
 # pre-breed; Jan(t):Apr(t)
 for(p in 1:n.years.new){
-  chla.4[p] <- mean(real.chla[((p*12)-3) : (p*12)])
+  chla.pre[p] <- mean(real.chla[((p*12)-3) : (p*12)])
 }
 
 # breed; May(t):Sep(t)
-for(p in 1:(n.years.new-1)){
-  chla.5[p] <- mean(real.chla[((p*12)+1) : ((p*12)+5)])
+for(p in 1:(n.years.new)){
+  chla.breed[p] <- mean(real.chla[((p*12)+1) : ((p*12)+5)])
 }
 ##############
 ### Priors ###
@@ -67,12 +67,10 @@ tau.S <- pow(sigma.S,-2)
 sigma.S ~ dunif(0,10) 
 tau.gam <- pow(sigma.gam,-2)
 sigma.gam ~ dunif(0,10)
-tau.chla <- pow(sigma.chla,-2) #LP
-sigma.chla ~ dunif(0,30) #LP
-beta.S.chla ~ dunif(-10,10) #LP
-beta.gam.chla ~ dunif(-10,10) #LP
-#tau.chla <- pow(sigma.chla,-2) #LP
-#sigma.chla ~ dunif(0,30) #LP
+tau.chla <- pow(sigma.chla,-2)
+sigma.chla ~ dunif(0,30)
+beta.S.cov ~ dunif(-10,10)
+beta.gam.cov ~ dunif(-10,10)
 
 
 int.S ~ dnorm(0,1) 

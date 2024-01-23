@@ -174,8 +174,7 @@ out$summary
 # Trace plots and density plots
 mcmcs<- out$samples
 
-MCMCtrace(mcmcs, params = 'int.S', type = 'both', ind = TRUE, pdf = TRUE,
-          open_pdf = FALSE, filename = 'int.S.mcmcvis')
+MCMCtrace(mcmcs, type = 'both', ind = TRUE, pdf = FALSE)
 
 # WAIC
 # This probably won't run along with everything else. Might need to select and run individually after running model.
