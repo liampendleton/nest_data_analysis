@@ -21,8 +21,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.npgo * npgo.year.1[year[i]] #change out NPGO covariate to 1:5 options
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.npgo * npgo.year.1[year[i]] #change out NPGO covariate to 1:5 options
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.npgo * npgo.year.1[year[i]] #Unlike chla.R and sst.R, this can stay the same. See line 73
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.npgo * npgo.data[year[i]] #Do not change. See line 73
 
 } 
 
@@ -70,7 +70,7 @@ data<-list(y = nests$outcome, year = nests$year.new,
            year.rand = as.numeric(as.factor(nests$year)),
            n.nests = dim(nests)[1], 
            n.years = length(unique(nests$year)),
-           npgo.year.1 = npgo.year.1) #change out which NPGO version you want here
+           npgo.data = npgo.year.1) #change out which NPGO version you want here
 
 parameters<-c('eps.S', 'eps.gam', 'sigma.S', 'sigma.gam', 'beta.S.npgo', 'beta.gam.npgo',
               'int.S', 'int.gam', 'mean.S', 'mean.gam')

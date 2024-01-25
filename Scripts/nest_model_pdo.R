@@ -21,8 +21,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.pdo * pdo.year.1[year[i]] #change out PDO covariate to 1:5 options
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.pdo * pdo.year.1[year[i]] #change out PDO covariate to 1:5 options
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.pdo * pdo.data[year[i]] #Unlike chla.R and sst.R, this can stay the same. See line 73
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.pdo * pdo.data[year[i]] #Do not change. See line 73
 
 } 
 
@@ -70,7 +70,7 @@ data<-list(y = nests$outcome, year = nests$year.new,
            year.rand = as.numeric(as.factor(nests$year)),
            n.nests = dim(nests)[1], 
            n.years = length(unique(nests$year)),
-           pdo.year.1 = pdo.year.1) #change out which pdo version you want here
+           pdo.data = pdo.year.1) #change out which pdo version you want here
 
 parameters<-c('eps.S', 'eps.gam', 'sigma.S', 'sigma.gam', 'beta.S.pdo', 'beta.gam.pdo',
               'int.S', 'int.gam', 'mean.S', 'mean.gam')
