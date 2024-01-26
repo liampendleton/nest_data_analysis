@@ -83,6 +83,7 @@ sigma.sst ~ dunif(0,30)
 beta.S.sst ~ dnorm(0,1)
 beta.gam.sst ~ dnorm(0,1)
 
+
 int.S ~ dnorm(0,1) 
 int.gam ~ dnorm(0,1)
 
@@ -97,7 +98,7 @@ mean.gam <- 1/(1+exp(-(int.gam)))
 
 source(here("Scripts", "sst.r"))
 #Writing out each different SST covariates from the function 
-sst.data <- sst.fxn()$sst_vec #does this need to be logged to keep values positive? like we did in chla?
+sst.data <- sst.fxn()$sst_vec 
 l.sst.data <- log(sst.data) #logged
 
 nests <- nests[-c(which(is.na(nests$outcome)==TRUE)),]
