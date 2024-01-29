@@ -38,9 +38,9 @@ for(i in 1:4){
 
 tau.total ~ dgamma(3.29,7.8)
 tau.model.S <- tau.total/K.S
-K.S <- w.S[1] + w.S[2] + w.S[3] + w.S[4] 
+K.S <- w.S[1] + w.S[2] + w.S[3] + w.S[4] + 1
 tau.model.gam <- tau.total/K.gam
-K.gam <- w.gam[1] + w.gam[2] + w.gam[3] + w.gam[4]
+K.gam <- w.gam[1] + w.gam[2] + w.gam[3] + w.gam[4] + 1
 
 
 ####################################
@@ -157,12 +157,12 @@ data<-list(y = nests$outcome, year = nests$year.new,
 
 #track all the parameters, including weights and coefficients 
 
-parameters<-c('eps.S', 'eps.gam', 'int.chla', 'sigma.S', 'sigma.gam', 'sigma.chla',
-              'beta.S.chla', 'beta.gam.chla', 'int.S', 'int.gam', 'mean.S', 'mean.gam', 'beta.S.npgo',
-              'beta.gam.npgo','w.S','w.gam', 'tau.total', 'int.chla', 'beta.S.npgo', 'beta.gam.npgo', 
-              'beta.S.pdo', 'beta.gam.pdo', 'int.sst', 'sigma.sst', 'beta.S.sst', 'beta.gam.sst')
+parameters<-c('eps.S', 'eps.gam', 'sigma.S', 'sigma.gam', 'int.chla', 'sigma.chla','int.sst', 'sigma.sst', 
+              'int.S', 'int.gam', 'mean.S', 'mean.gam', 'beta.S.npgo',
+              'beta.gam.npgo','beta.S.pdo', 'beta.gam.pdo', 
+              'beta.S.sst', 'beta.gam.sst','beta.S.chla', 'beta.gam.chla','w.S','w.gam', 'tau.total')
 
-inits<-function() {list(int.S = runif(1)) }
+inits<-function() {list(int.S = runif(1), w.gam = c(1,1,1,1), w.S = c(1,1,1,1)) }
 
 ##############
 ### Output ###
