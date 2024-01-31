@@ -173,12 +173,12 @@ out <- jagsUI::jags(data = data ,
                     model.file = "nest_surv_allvars.txt",
                     n.chains = 3,
                     #n.thin = 1, 
-                    n.iter = 5000, #play with this
-                    n.burnin = 500, #play with this
+                    n.iter = 50000, #play with this
+                    n.burnin = 5000, #play with this
                     n.adapt = 100)
 
 # Extracting samples from MCMC
-out$samples
+#out$samples
 
 # Extracting the summary jags data
 out$summary
