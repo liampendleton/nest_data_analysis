@@ -35,3 +35,4 @@ max.weight.model <- model.names[1] #identify best model
 out.est <- cbind(model.names, out.est) #add model names
 best.model.out <- out.est[(out.est[,1] == max.weight.model),] #show all parameter estimates for iterations of best model
 best.model.means <- as.matrix(colMeans(best.model.out[,-1])) #get mean parameter estimates
+colnames(best.model.means) <- "01000000"
