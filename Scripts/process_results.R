@@ -1,4 +1,7 @@
 library(dplyr)
+library(here)
+
+out <- readRDS(here("Results/out.rds"))
 
 #bind all model weights together 
 weights.out <- cbind(as.matrix(out$sims.list$w.S), as.matrix(out$sims.list$w.gam)) #left four values w.S, right four w.gam
@@ -30,6 +33,17 @@ colnames(out.est) <- c("eps.S.1", "eps.S.2", "eps.S.3", "eps.S.4", "eps.S.5", "e
                        "eps.gam.11", "eps.gam.12", "eps.gam.13", "eps.gam.14", "eps.gam.15", "eps.gam.16", "eps.gam.17", "eps.gam.18", "eps.gam.19", "eps.gam.20",
                        "sigma.S", "sigma.gam", "int.chla", "sigma.chla", "int.sst", "sigma.sst", "int.S", "int.gam", "mean.S", "mean.gam", "beta.S.npgo", "beta.gam.npgo",
                        "beta.S.pdo", "beta.gam.pdo", "beta.S.sst", "beta.gam.sst", "beta.S.chla", "beta.gam.chla", "tau.total", "deviance")
+
+#it isn't clear to me why you would want to remove the leading zeros - also, the best model is identified in the msr object above 
+#seems like all you need is: 
+out.bestmodel <- out.est[which(models.out== "01000000"),]
+#then get means 
+means <- apply(out.bestmodel,2,mean)
+#then get 95% CrI
+CrI <- apply(out.bestmodel,2,function(x){quantile(x,probs = c(0.025,0.975))})
+# can also get SD etc as you like 
+
+
 model.names <- as.numeric(models.out) #this removes leading zeros, so the best model now appears as 1000000; MUST BE NUMERIC to get means at end
 max.weight.model <- model.names[1] #identify best model
 out.est <- cbind(model.names, out.est) #add model names
