@@ -1,6 +1,6 @@
-library(dplyr)
 library(here)
 
+#read in saved results
 out <- readRDS(here("Results/out.rds"))
 
 #bind all model weights together 
@@ -22,8 +22,14 @@ for(i in 1:dim(table)){
 
 #create a new object 
 msr <- data.frame(model.names,as.numeric(freqs))
-colnames(msr) <- c("model","frequency")
-msr <- msr[order(msr$frequency,decreasing = TRUE),] #sort models by most support
+msr <- msr[order(msr$as.numeric.freqs.,decreasing = TRUE),] #sort models by most support
+msr <- cbind(msr, rep(NA, length(msr[,1])))
+colnames(msr) <- c("model","frequency", "weight")
+
+#get weights from frequencies
+for (j in 1:length(msr[,1])){
+  msr[j,3] <- msr[j,2]/sum(msr$frequency)
+}
  
 #pull estimates of other parameters when top model is in place 
 out.est <- matrix(unlist(out$sims.list[-c(21:22)]), ncol = 60) #all parameter estimates excluding weights
@@ -34,19 +40,13 @@ colnames(out.est) <- c("eps.S.1", "eps.S.2", "eps.S.3", "eps.S.4", "eps.S.5", "e
                        "sigma.S", "sigma.gam", "int.chla", "sigma.chla", "int.sst", "sigma.sst", "int.S", "int.gam", "mean.S", "mean.gam", "beta.S.npgo", "beta.gam.npgo",
                        "beta.S.pdo", "beta.gam.pdo", "beta.S.sst", "beta.gam.sst", "beta.S.chla", "beta.gam.chla", "tau.total", "deviance")
 
-#it isn't clear to me why you would want to remove the leading zeros - also, the best model is identified in the msr object above 
-#seems like all you need is: 
+#Isolate parameter estimates from best model
 out.bestmodel <- out.est[which(models.out== "01000000"),]
 #then get means 
 means <- apply(out.bestmodel,2,mean)
 #then get 95% CrI
 CrI <- apply(out.bestmodel,2,function(x){quantile(x,probs = c(0.025,0.975))})
-# can also get SD etc as you like 
+#bind the two
+bestmodel.mean.CrI <- rbind(means, CrI)
 
 
-model.names <- as.numeric(models.out) #this removes leading zeros, so the best model now appears as 1000000; MUST BE NUMERIC to get means at end
-max.weight.model <- model.names[1] #identify best model
-out.est <- cbind(model.names, out.est) #add model names
-best.model.out <- out.est[(out.est[,1] == max.weight.model),] #show all parameter estimates for iterations of best model
-best.model.means <- as.matrix(colMeans(best.model.out[,-1])) #get mean parameter estimates
-colnames(best.model.means) <- "01000000"
