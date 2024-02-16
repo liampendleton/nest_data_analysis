@@ -49,4 +49,29 @@ CrI <- apply(out.bestmodel,2,function(x){quantile(x,probs = c(0.025,0.975))})
 #bind the two
 bestmodel.mean.CrI <- rbind(means, CrI)
 
+#null/second parameter estimates
+null <- out.est[which(models.out== "00000000"),]
+null.means <- apply(null,2,mean)
+CrI.null <- apply(null,2,function(x){quantile(x,probs = c(0.025,0.975))})
+null.mean.CrI <- rbind(null.means, CrI.null)
 
+#all models avg parameter estimates
+all.means <- apply(out.est,2,mean)
+CrI.all <- apply(out.est,2,function(x){quantile(x,probs = c(0.025,0.975))})
+all.mean.CrI <- rbind(all.means, CrI.all)
+
+#compile top, second, avg PHI
+mean.survival <- c(bestmodel.mean.CrI[1,49], null.mean.CrI[1,49], all.mean.CrI[1,49])
+CrI_2.5 <- c(bestmodel.mean.CrI[2,49], null.mean.CrI[2,49], all.mean.CrI[2,49])
+CrI_97.5 <- c(bestmodel.mean.CrI[3,49], null.mean.CrI[3,49], all.mean.CrI[3,49])
+df <- data.frame(mean.survival, CrI_2.5, CrI_97.5)
+df.survival <- cbind(c("Top", "Null", "Model Average"), df)
+colnames(df.survival) <- c("Model", "Mean", "Lower_CrI", "Upper_CrI")
+
+#compile top, second, avg GAMMA
+mean.gam <- c(bestmodel.mean.CrI[1,50], null.mean.CrI[1,50], all.mean.CrI[1,50])
+CrI_2.5 <- c(bestmodel.mean.CrI[2,50], null.mean.CrI[2,50], all.mean.CrI[2,50])
+CrI_97.5 <- c(bestmodel.mean.CrI[3,50], null.mean.CrI[3,50], all.mean.CrI[3,50])
+df.gam <- data.frame(mean.gam, CrI_2.5, CrI_97.5)
+df.gam <- cbind(c("Top", "Null", "Model Average"), df.gam)
+colnames(df.gam) <- c("Model", "Mean", "Lower_CrI", "Upper_CrI")
