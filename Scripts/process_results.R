@@ -75,3 +75,9 @@ CrI_97.5 <- c(bestmodel.mean.CrI[3,50], null.mean.CrI[3,50], all.mean.CrI[3,50])
 df.gam <- data.frame(mean.gam, CrI_2.5, CrI_97.5)
 df.gam <- cbind(c("Top", "Null", "Model Average"), df.gam)
 colnames(df.gam) <- c("Model", "Mean", "Lower_CrI", "Upper_CrI")
+
+#top two avg
+toptwo <- rbind(out.bestmodel, null)
+means <- apply(toptwo,2,mean)
+CrI.toptwo <- apply(toptwo,2,function(x){quantile(x,probs = c(0.025,0.975))})
+full.toptwo <- rbind(means,CrI.toptwo)
