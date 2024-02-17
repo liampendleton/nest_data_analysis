@@ -22,9 +22,9 @@ scale_coords <- c(x = -122, y = 48)
 
 ## Set up "point of interest" data
 coord_cities <- data.frame(
-  city = c("Port Townsend", "Discovery Bay", "Strait of Juan de Fuca", "Protection Island"),
-  lat = c(48.117428, 48.044409, 48.253593, 48.127288),
-  long = c(-122.760748, -122.854857, -123.007165, -122.929698))
+  city = c("Port Townsend", "Discovery Bay", "Strait of Juan de Fuca", "Admiralty Inlet", "Seattle", "Everett", "Port Angeles", "Sequim", "Mt Vernon", "Protection Island"),
+  lat = c(48.117428, 48.044409, 48.253593, 48.097653, 47.607277, 47.979204, 48.118342, 48.079632, 48.420137, 48.127288),
+  long = c(-122.760748, -122.854857, -123.007165, -122.652190, -122.332453, -122.201544, -123.430418, -123.102332, -122.337442, -122.929698))
 
 ###########################
 ## Map of Protection Island
