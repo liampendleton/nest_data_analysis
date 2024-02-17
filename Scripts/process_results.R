@@ -81,3 +81,20 @@ toptwo <- rbind(out.bestmodel, null)
 means <- apply(toptwo,2,mean)
 CrI.toptwo <- apply(toptwo,2,function(x){quantile(x,probs = c(0.025,0.975))})
 full.toptwo <- rbind(means,CrI.toptwo)
+
+#plot predicted phi by NPGO 
+NPGO.pred <- seq(-3,3,by=0.25)
+
+S.pred <- matrix(NA,nrow= nrow(out.bestmodel),ncol=length(NPGO.pred))
+for(s in 1:nrow(S.pred)){
+  for(v in 1:ncol(S.pred)){
+                  #int.S                #beta.S.npgo         
+    S.pred[s,v] <- 1/(1+exp(-(out.bestmodel[s,47] + out.bestmodel[s,51] * NPGO.pred[v])))
+  }
+} 
+means.pred <- apply(S.pred,2,mean)
+Cr.pred <- apply(S.pred,2,function(x){quantile(x,probs = c(0.025,0.975))})
+
+#plot NPGO on the x and means and intervals on the y 
+
+plot(NPGO.pred,means.pred,ylim = c(0,1))
