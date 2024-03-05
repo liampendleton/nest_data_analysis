@@ -21,13 +21,10 @@ nestbox_data$Date <- as.Date(nestbox_data$Date,format="%Y-%m-%d")
 #all the date entries for nests checked on 6-18-2010 are entered as 6-18-2020, fixing here 
 nestbox_data$Date[which(nestbox_data$Date == "2020-06-18")] <- "2010-06-18"
 
-# #delete 2023 for now 
-# nestbox_data <- nestbox_data[-c(which(nestbox_data$Year == 2023)),]
-
 #create a nest record ID 
 nestbox_data$Record <- paste(nestbox_data$Year,nestbox_data$Box_ID,sep="_")
 
-#here are some weird nests that I found - deleting for now - we need to discuss 
+#here are some weird nests that I found - deleting for now
 #this nest has no eggs but then chicks appear 
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_78a")),]
 #this nest has no eggs but then chicks appear, then disappear and then reappear!  
@@ -129,9 +126,9 @@ for(j in 1:length(nests2)){
 year <- substring(nests2,1,4)
 output <- data.frame(year,nests2,outcome)
 
-#delete the nests that are being censored - do this once all done and we feel good about the data  
-#output <- output[-c(which(is.na(output$outcome == TRUE))), ]
+#delete the nests that are being censored - nests censored if final observation featured chick and no conclusion can be drawn 
+output <- output[-c(which(is.na(output$outcome == TRUE))), ]
 
-# write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
+write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
 
 
