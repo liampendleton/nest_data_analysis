@@ -173,12 +173,9 @@ out <- jagsUI::jags(data = data ,
                     model.file = "nest_surv_allvars.txt",
                     n.chains = 3,
                     #n.thin = 1, 
-                    n.iter = 50000, #play with this
-                    n.burnin = 5000, #play with this
+                    n.iter = 135000, #play with this
+                    n.burnin = 15000, #play with this
                     n.adapt = 100)
-
-# Extracting samples from MCMC
-#out$samples
 
 # Extracting the summary jags data
 out$summary
@@ -189,7 +186,6 @@ mcmcs<- out$samples
 MCMCtrace(mcmcs, type = 'both', ind = TRUE, pdf = FALSE)
 
 # WAIC
-# This probably won't run along with everything else. Might need to select and run individually after running model.
 waic_mod <- jags.samples(out$model,
                          c("WAIC", "deviance"),
                          type = "mean",
@@ -202,3 +198,5 @@ waic_mod$waic <- waic_mod$deviance + waic_mod$p_waic
 tmp <- sapply(waic_mod, sum)
 waic.m0 <- round(c(waic = tmp[["waic"]], p_waic = tmp[["p_waic"]]),1)
 print(waic.m0)
+
+saveRDS(out, "out.rds") #move to results folder
