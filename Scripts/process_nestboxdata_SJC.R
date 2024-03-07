@@ -129,6 +129,11 @@ output <- data.frame(year,nests2,outcome)
 #delete the nests that are being censored - nests censored if final observation featured chick and no conclusion can be drawn 
 output <- output[-c(which(is.na(output$outcome == TRUE))), ]
 
+#how many 0's reported due to chicks disappearing before they were ready to fledge? Last observation before 29 days old
+
+
+
+
 write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
 
 

@@ -41,60 +41,45 @@ colnames(out.est) <- c("eps.S.1", "eps.S.2", "eps.S.3", "eps.S.4", "eps.S.5", "e
                        "beta.S.pdo", "beta.gam.pdo", "beta.S.sst", "beta.gam.sst", "beta.S.chla", "beta.gam.chla", "tau.total", "deviance")
 
 #Isolate parameter estimates from best model
-out.bestmodel <- out.est[which(models.out== "01000000"),]
-#then get means 
-means <- apply(out.bestmodel,2,mean)
-#then get 95% CrI
-CrI <- apply(out.bestmodel,2,function(x){quantile(x,probs = c(0.025,0.975))})
-#bind the two
-bestmodel.mean.CrI <- rbind(means, CrI)
+out.bestmodel <- out.est[which(models.out== "00000000"),]
+means <- apply(out.bestmodel,2,mean)#then get means 
+CrI <- apply(out.bestmodel,2,function(x){quantile(x,probs = c(0.025,0.975))}) #then get 95% CrI
+bestmodel.mean.CrI <- rbind(means, CrI) #bind the two
 
-#null/second parameter estimates
-null <- out.est[which(models.out== "00000000"),]
-null.means <- apply(null,2,mean)
-CrI.null <- apply(null,2,function(x){quantile(x,probs = c(0.025,0.975))})
-null.mean.CrI <- rbind(null.means, CrI.null)
+#second/second parameter estimates
+second <- out.est[which(models.out== "01000000"),]
+second.means <- apply(second,2,mean)
+CrI.second <- apply(second,2,function(x){quantile(x,probs = c(0.025,0.975))})
+second.mean.CrI <- rbind(second.means, CrI.second)
 
-#all models avg parameter estimates
-all.means <- apply(out.est,2,mean)
-CrI.all <- apply(out.est,2,function(x){quantile(x,probs = c(0.025,0.975))})
-all.mean.CrI <- rbind(all.means, CrI.all)
+#avg between top two
+bind.two <- rbind(out.bestmodel, second)
+two.means <- apply(bind.two,2,mean)
+two.avg.CrI <- apply(bind.two,2,function(x){quantile(x,probs = c(0.025,0.975))})
+two.avg.mod <- rbind(two.means, two.avg.CrI)
+
+#############################
 
 #compile top, second, avg PHI
-mean.survival <- c(bestmodel.mean.CrI[1,49], null.mean.CrI[1,49], all.mean.CrI[1,49])
-CrI_2.5 <- c(bestmodel.mean.CrI[2,49], null.mean.CrI[2,49], all.mean.CrI[2,49])
-CrI_97.5 <- c(bestmodel.mean.CrI[3,49], null.mean.CrI[3,49], all.mean.CrI[3,49])
+mean.survival <- c(bestmodel.mean.CrI[1,49], second.mean.CrI[1,49], two.avg.mod[1,49])
+CrI_2.5 <- c(bestmodel.mean.CrI[2,49], second.mean.CrI[2,49], two.avg.mod[2,49])
+CrI_97.5 <- c(bestmodel.mean.CrI[3,49], second.mean.CrI[3,49], two.avg.mod[3,49])
 df <- data.frame(mean.survival, CrI_2.5, CrI_97.5)
-df.survival <- cbind(c("Top", "Null", "Model Average"), df)
+df.survival <- cbind(c("Top/Null", "Second", "Model Average"), df)
 colnames(df.survival) <- c("Model", "Mean", "Lower_CrI", "Upper_CrI")
 
 #compile top, second, avg GAMMA
-mean.gam <- c(bestmodel.mean.CrI[1,50], null.mean.CrI[1,50], all.mean.CrI[1,50])
-CrI_2.5 <- c(bestmodel.mean.CrI[2,50], null.mean.CrI[2,50], all.mean.CrI[2,50])
-CrI_97.5 <- c(bestmodel.mean.CrI[3,50], null.mean.CrI[3,50], all.mean.CrI[3,50])
+mean.gam <- c(bestmodel.mean.CrI[1,50], second.mean.CrI[1,50], two.avg.mod[1,50])
+CrI_2.5 <- c(bestmodel.mean.CrI[2,50], second.mean.CrI[2,50], two.avg.mod[2,50])
+CrI_97.5 <- c(bestmodel.mean.CrI[3,50], second.mean.CrI[3,50], two.avg.mod[3,50])
 df.gam <- data.frame(mean.gam, CrI_2.5, CrI_97.5)
-df.gam <- cbind(c("Top", "Null", "Model Average"), df.gam)
+df.gam <- cbind(c("Top/Null", "Second", "Model Average"), df.gam)
 colnames(df.gam) <- c("Model", "Mean", "Lower_CrI", "Upper_CrI")
 
 #top two avg
-toptwo <- rbind(out.bestmodel, null)
+toptwo <- rbind(out.bestmodel, second)
 means <- apply(toptwo,2,mean)
 CrI.toptwo <- apply(toptwo,2,function(x){quantile(x,probs = c(0.025,0.975))})
 full.toptwo <- rbind(means,CrI.toptwo)
 
-#plot predicted phi by NPGO 
-NPGO.pred <- seq(-3,3,by=0.25)
 
-S.pred <- matrix(NA,nrow= nrow(out.bestmodel),ncol=length(NPGO.pred))
-for(s in 1:nrow(S.pred)){
-  for(v in 1:ncol(S.pred)){
-                  #int.S                #beta.S.npgo         
-    S.pred[s,v] <- 1/(1+exp(-(out.bestmodel[s,47] + out.bestmodel[s,51] * NPGO.pred[v])))
-  }
-} 
-means.pred <- apply(S.pred,2,mean)
-Cr.pred <- apply(S.pred,2,function(x){quantile(x,probs = c(0.025,0.975))})
-
-#plot NPGO on the x and means and intervals on the y 
-
-plot(NPGO.pred,means.pred,ylim = c(0,1))
