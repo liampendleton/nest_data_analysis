@@ -1,11 +1,10 @@
 ---
-title: "README"
 author: "Liam Pendleton"
 date: "2023-11-14"
 output: html_document
 ---
 
-## *The influence of environmental conditions on Pigeon Guillemot breeding success in the Salish Sea* 
+## *Estimating the influence of oceanographic conditions on breeding success of Pigeon Guillemots (Cepphus columba)* 
 
 #### Liam C. Pendleton, Lee Robinson, Eric L. Wagner, Scott F. Pearson, Susan M. Thomas, Sarah J. Converse
 
@@ -21,17 +20,20 @@ Seabird population dynamics are tightly linked with conditions in marine foragin
 
 ### Table of Contents
 
-#### [Scripts](./scripts)
-This folder contains the scripts necessary to read in and format nest monitoring data, covariate data, and to run all models involved in analyses.
+### [Data](./Data)
+This folder contains raw data for all of the oceanographic predictors, nest monitoring data, and a file "model_input.csv", which was created and stored from the file "process_nestboxdata.R". Note that there are two files of chlorophyll data that cover two different periods.
 
-#### [Data](./Data)
-This folder contains raw data including nest monitoring data and covariate data.
+### [Scripts](./Scripts)
+This is a directory to the different types of scripts used in this project. The "covariates" folder contains the scripts used to process and format each of the oceanographic predictor data sets. The "nestDataPreP" folder contains the script used to determine outcomes of monitored nests. The "nestModels" folder contains five scripts: one to relate each of the four oceanographic predictors to breeding outcomes, and one that includes all of the top-performing temporal variants of the oceanographic predictors (nest_model_allvars.R). Finally, the "results" folder contains a script to process the output of the "nest_model_allvars.R" file found in the "nestModels" folder, and a script to create figures.
+
+### [Results](./Results)
+This folder contains a PDF featuring the MCMC trace plots of "nest_model_allvars.R", and the output it produces written into "out.rds".
 
 ### Required Packages and Versions Used
+xxx
 
+### Details of Article 
+Pendleton LC, L Robinson, EL Wagner, SF Pearson, SM Thomas, and SJ Converse. 2024. Estimating the influence of oceanographic conditions on breeding success in Pigeon Guillemots (*Cepphus columba*).
 
 ### How to Use this Repository
-
-
-
-
+Despite the variety of files in this repository, only a few are necessary to reproduce the analysis. Begin by running "process_nestboxdata.R" to produce PIGU breeding outcomes. Run "nest_model_allvars.R" to run models. This will automatically run the scripts used to process covariate data. Run "process_results.R" to process and contextualize the output from "nest_model_allvars.R". Finally, run "figures.R" to produce figures.
