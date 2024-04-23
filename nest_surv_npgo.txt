@@ -9,7 +9,7 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.npgo * npgo.data[year[i]] #Unlike chla.R and sst.R, this can stay the same. See line 71
+  logit(S[i]) <- eps.S[year.rand[i]] #Unlike chla.R and sst.R, this can stay the same. See line 71
   logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.npgo * npgo.data[year[i]] #Do not change. See line 71
 
 } 
@@ -29,10 +29,10 @@ sigma.gam ~ dunif(0,10)
 beta.S.npgo ~ dnorm(0,1)
 beta.gam.npgo ~ dnorm(0,1)
 
-int.S ~ dnorm(0,1) 
+# int.S ~ dnorm(0,1) 
 int.gam ~ dnorm(0,1)
 
-mean.S <- 1/(1+exp(-(int.S)))
+# mean.S <- 1/(1+exp(-(int.S)))
 mean.gam <- 1/(1+exp(-(int.gam)))
 
 }

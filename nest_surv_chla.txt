@@ -9,8 +9,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.chla * chla.breed[year[i]] #change out chla covariate to 1:5 options
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.chla * chla.breed[year[i]] #change out chla covariate to 1:5 options
+  logit(S[i]) <- eps.S[year.rand[i]] + beta.S.chla * chla.breed[year[i]] #change out chla covariate to 1:5 options
+  logit(gamma[i]) <- eps.gam[year.rand[i]] #change out chla covariate to 1:5 options
 
 } 
 
@@ -74,9 +74,9 @@ beta.S.chla ~ dnorm(0,1)
 beta.gam.chla ~ dnorm(0,1)
 
 int.S ~ dnorm(0,1) 
-int.gam ~ dnorm(0,1)
+# int.gam ~ dnorm(0,1)
 
 mean.S <- 1/(1+exp(-(int.S)))
-mean.gam <- 1/(1+exp(-(int.gam)))
+# mean.gam <- 1/(1+exp(-(int.gam)))
 
 }
