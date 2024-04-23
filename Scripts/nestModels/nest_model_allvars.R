@@ -17,8 +17,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + w.S[1]*beta.S.chla * chla.year.1[year[i]] + w.S[2]*beta.S.npgo * npgo.winter[year[i]] + w.S[3]*beta.S.pdo * pdo.winter[year[i]] + w.S[4]*beta.S.sst * sst.year.1[year[i]]
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + w.gam[1]*beta.gam.chla * chla.year.1[year[i]] + w.gam[2]*beta.gam.npgo * npgo.winter[year[i]] + w.gam[3]*beta.gam.pdo * pdo.winter[year[i]] + w.gam[4]*beta.gam.sst * sst.year.1[year[i]]
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + w.S[1]*beta.S.chla * chla.year.2[year[i]] + w.S[2]*beta.S.npgo * npgo.year.1[year[i]] + w.S[3]*beta.S.pdo * pdo.pre[year[i]] + w.S[4]*beta.S.sst * sst.pre[year[i]]
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + w.gam[1]*beta.gam.chla * chla.year.1[year[i]] + w.gam[2]*beta.gam.npgo * npgo.pre[year[i]] + w.gam[3]*beta.gam.pdo * pdo.winter[year[i]] + w.gam[4]*beta.gam.sst * sst.year.1[year[i]]
 
 } 
 
@@ -58,6 +58,11 @@ for(p in 1:n.years.new){
   chla.year.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
 }
 
+# full-year; Oct(t-1):Sep(t)
+for(p in 1:n.years.new){
+  chla.year.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
+}
+
 ### Addressing missing SST data ### 
 
 #loop over remaining months/years
@@ -73,6 +78,11 @@ for(k in 1:total.sst){
 # full-year; May(t-1):Apr(t)
 for(p in 1:n.years.new){
   sst.year.1[p] <- mean(real.sst[((p*12)-11) : (p*12)])
+}
+
+## pre-breed; Jan(t):Apr(t) ##
+for(p in 1:n.years.new){
+  sst.pre[p] <- mean(real.sst[((p*12)-3) : (p*12)])
 }
 
 ##############
@@ -120,7 +130,8 @@ l.est.chla <- log(chla.s1)
 
 # NPGO
 source(here("Scripts", "covariates", "npgo.r"))
-npgo.winter <- npgo.fxn()$npgo3
+npgo.year.1 <- npgo.fxn()$npgo1
+npgo.pre <- npgo.fxn()$npgo4
 
 # SST
 source(here("Scripts", "covariates", "sst.r"))
@@ -131,6 +142,7 @@ l.sst.data <- log(sst.data) #logged
 # PDO
 source(here("scripts", "covariates", "pdo.r"))
 #Writing out each different PDO covariates from the function
+pdo.pre <- pdo.fxn()$pdo4
 pdo.winter <- pdo.fxn()$pdo3 #winter; Oct(t-1) - Mar(t)
 
 # Nest data
@@ -149,7 +161,9 @@ data<-list(y = nests$outcome, year = nests$year.new,
            total.sst = length(sst.data),
            l.sst.data = l.sst.data,
            pdo.winter = pdo.winter,
-           npgo.winter = npgo.winter)
+           npgo.year.1 = npgo.year.1,
+           npgo.pre = npgo.pre,
+           pdo.pre = pdo.pre)
 
 #track all the parameters, including weights and coefficients 
 
