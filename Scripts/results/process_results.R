@@ -65,7 +65,7 @@ mean.survival <- c(bestmodel.mean.CrI[1,49], second.mean.CrI[1,49], two.avg.mod[
 CrI_2.5 <- c(bestmodel.mean.CrI[2,49], second.mean.CrI[2,49], two.avg.mod[2,49])
 CrI_97.5 <- c(bestmodel.mean.CrI[3,49], second.mean.CrI[3,49], two.avg.mod[3,49])
 df <- data.frame(mean.survival, CrI_2.5, CrI_97.5)
-df.survival <- cbind(c("Top", "Second/Null", "Model Average"), df)
+df.survival <- cbind(c("Top", "Second/Null", "Model Avg"), df)
 colnames(df.survival) <- c("Model", "Mean", "Lower_CrI", "Upper_CrI")
 
 #compile top, second, avg GAMMA
@@ -73,7 +73,7 @@ mean.gam <- c(bestmodel.mean.CrI[1,50], second.mean.CrI[1,50], two.avg.mod[1,50]
 CrI_2.5 <- c(bestmodel.mean.CrI[2,50], second.mean.CrI[2,50], two.avg.mod[2,50])
 CrI_97.5 <- c(bestmodel.mean.CrI[3,50], second.mean.CrI[3,50], two.avg.mod[3,50])
 df.gam <- data.frame(mean.gam, CrI_2.5, CrI_97.5)
-df.gam <- cbind(c("Top", "Second/Null", "Model Average"), df.gam)
+df.gam <- cbind(c("Top", "Second/Null", "Model Avg"), df.gam)
 colnames(df.gam) <- c("Model", "Mean", "Lower_CrI", "Upper_CrI")
 
 #top two avg
