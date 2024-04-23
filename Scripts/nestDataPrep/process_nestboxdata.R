@@ -122,18 +122,21 @@ for(j in 1:length(nests2)){
   }
 }
 
-#create the output data set 
+# Create the output data set 
 year <- substring(nests2,1,4)
 output <- data.frame(year,nests2,outcome)
 
-#delete the nests that are being censored - nests censored if final observation featured chick and no conclusion can be drawn 
+# Delete the nests that are being censored - nests censored if final observation featured chick and no conclusion can be drawn 
 output <- output[-c(which(is.na(output$outcome == TRUE))), ]
 
-#how many 0's reported due to chicks disappearing before they were ready to fledge? Last observation before 29 days old
-
-
-
-
+# Record data
 write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
 
+# Summarize outcomes per year
+summary <- model.input %>%
+  group_by(year) %>%
+  summarise(No_chicks = sum(outcome == 0),
+            One_chick = sum(outcome == 1),
+            Two_chicks = sum(outcome == 2))
 
+print(summary)
