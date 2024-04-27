@@ -24,23 +24,20 @@ nestbox_data$Date[which(nestbox_data$Date == "2020-06-18")] <- "2010-06-18"
 #create a nest record ID 
 nestbox_data$Record <- paste(nestbox_data$Year,nestbox_data$Box_ID,sep="_")
 
-#here are some weird nests that I found - deleting for now
-#this nest has no eggs but then chicks appear 
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_78a")),]
-#this nest has no eggs but then chicks appear, then disappear and then reappear!  
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_57")),]
-#this nest has no eggs but then chicks appear  
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_56")),]
-#this nest has no eggs but then chicks appear  
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_65")),]
-#this nest has no eggs but then chicks appear  
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_65")),]
-#this nest has no eggs but then chicks appear  
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_60")),]
+#Anomalous nests that should be removed
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_78a")),]#this nest has no eggs but then chicks appear 
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_57")),]#this nest has no eggs but then chicks appear, then disappear and then reappear!  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_56")),]#this nest has no eggs but then chicks appear  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_65")),]#this nest has no eggs but then chicks appear  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_65")),]#this nest has no eggs but then chicks appear  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_60")),]#this nest has no eggs but then chicks appear  
 
-#make NAs = 0 
-nestbox_data$Number_Eggs[which(is.na(nestbox_data$Number_Eggs == TRUE))] <- 0 
-nestbox_data$Number_Chicks[which(is.na(nestbox_data$Number_Chicks == TRUE))] <- 0 
+#Two nests in same year?
+result <- nestbox_data %>%
+  group_by(Record) %>%
+  arrange(Date) %>%
+  mutate(transition = ifelse(Number_Chicks == 0 & lag(Number_Chicks) > 0 & lead(Number_Chicks) > 0, TRUE, FALSE)) %>%
+  summarize(two_nests = any(transition, na.rm = TRUE))
 
 #unique nest record IDs 
 nests <- unique(nestbox_data$Record)
@@ -125,18 +122,28 @@ for(j in 1:length(nests2)){
 # Create the output data set 
 year <- substring(nests2,1,4)
 output <- data.frame(year,nests2,outcome)
+output.withNAs <- output
 
-# Delete the nests that are being censored - nests censored if final observation featured chick and no conclusion can be drawn 
+year_table <- table(output.withNAs$year)
+nests_monitored <- as.vector(year_table)
+
+### DELETE the nests that are being censored - nests censored if final observation featured chick and no conclusion can be drawn 
+no_finale <- output[c(which(is.na(output$outcome == TRUE))),] #These are nests where an outcome could not be determined because birds were in box up through the final observation
 output <- output[-c(which(is.na(output$outcome == TRUE))), ]
+output.withNAs <- output
 
-# Record data
-write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
 
 # Summarize outcomes per year
-summary <- model.input %>%
+summary <- output %>%
   group_by(year) %>%
   summarise(No_chicks = sum(outcome == 0),
             One_chick = sum(outcome == 1),
             Two_chicks = sum(outcome == 2))
 
 print(summary)
+
+#NUMBER OF CHICKS FLEDGED
+fledged <- sum(summary[,3]) + (2*(sum(summary[,4])))
+
+# Record data
+write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
