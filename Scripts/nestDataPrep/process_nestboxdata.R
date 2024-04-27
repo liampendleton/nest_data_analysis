@@ -1,7 +1,7 @@
 library(here)
-#SJC: REMEMBER TO CHECK THE CODE AND MAKE SURE ALL NECESSARY LIBRARIES ARE INDICATED 
 library(dplyr)
 
+### DATA FORMATTING
 #make warnings errors so loops will terminate 
 options(warn = 2)  
 
@@ -10,43 +10,55 @@ options(warn = 2)
 low.fledge <- 29
 high.fledge <- 54
 
-#read in full dataset
 nestbox.init <- read.csv(here("Data","PI_Nest_Data_Full.csv"))
-
-#keep selected columns
 nestbox_data <- data.frame(nestbox.init$X,nestbox.init$DATE,nestbox.init$BOX_ID,nestbox.init$Number_Eggs,nestbox.init$Number_Live_Chicks)
 colnames(nestbox_data) <- c("Year","Date","Box_ID","Number_Eggs","Number_Chicks")
 nestbox_data$Date <- as.Date(nestbox_data$Date,format="%Y-%m-%d")
 
-#all the date entries for nests checked on 6-18-2010 are entered as 6-18-2020, fixing here 
+#all the date entries for nests checked on 6-18-2010 are entered as 6-18-2020; fixing here 
 nestbox_data$Date[which(nestbox_data$Date == "2020-06-18")] <- "2010-06-18"
 
 #create a nest record ID 
 nestbox_data$Record <- paste(nestbox_data$Year,nestbox_data$Box_ID,sep="_")
 
-#SJC: WHERE IS THE CODE THAT ALLOWED YOU TO DETECT THESE PROBLEMS?? PLEASE ADD THAT CODE AND COMMENT CODE TO INDICATE STEPS 
-#SJC: OR IF THAT CODE IS BELOW, NOTE THAT HERE - NOTE THE LINES OF CODE SO THIS CAN BE RECREATED LATER 
+### DATA VALIDATION
+#Identify chicks that appear without prior record of eggs
+chicks_no_eggs <- nestbox_data %>%
+  group_by(Record) %>%
+  arrange(Date) %>%
+  mutate(chicks_no_eggs = any(Number_Chicks > 0 & all(Number_Eggs == 0))) %>%
+  summarize(chicks_no_eggs = any(chicks_no_eggs, na.rm = TRUE)) %>%
+  filter(chicks_no_eggs == TRUE)
+
 #Anomalous nests that should be removed
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_78a")),]#this nest has no eggs but then chicks appear 
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_57")),]#this nest has no eggs but then chicks appear, then disappear and then reappear!  
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_56")),]#this nest has no eggs but then chicks appear  
-nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_65")),]#this nest has no eggs but then chicks appear  
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_65")),]#this nest has no eggs but then chicks appear  
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_60")),]#this nest has no eggs but then chicks appear  
+nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_57")),]#this nest has no eggs but then chicks appear, then disappear and then reappear!  
+
 #SJC: CHECKED ABOVE IN ORIGINAL DATA  
 #SJC: 1999_78a I AGREE THIS IS A PROBLEM 
 #SJC: 1999_57 I AGREE THIS IS A PROBLEM  
 #SJC: 1999_56 I AGREE THIS IS A PROBLEM  
-#SJC: 1999_65 THIS NEST IS REPEATED IN LIST ABOVE. WHY? IN ORIGINAL DATA, THIS NEST HAD EGGS ON 14 JUNE  
-#SJC: 1999_60 IN ORIGINAL DATA, THIS NEST HAD EGGS ON 9 JULY  
+#SJC: 1999_65 THIS NEST IS REPEATED IN LIST ABOVE. WHY? IN ORIGINAL DATA, THIS NEST HAD EGGS ON 14 JUNE #LP: I agree; removed 
+#SJC: 1999_60 IN ORIGINAL DATA, THIS NEST HAD EGGS ON 9 JULY #LP: I think you mean 96_60? There was no 99_60 listed here
 
 #SJC: WHAT ARE YOU DOING ABOUT THIS? WHAT STEPS ARE YOU TAKING WITH WHAT YOU FIND HERE? PLEASE COMMENT CODE 
-#Two nests in same year?
-result <- nestbox_data %>%
+#Check to see if two nests ever occur in the same box in a year
+two_nests <- nestbox_data %>%
   group_by(Record) %>%
   arrange(Date) %>%
-  mutate(transition = ifelse(Number_Chicks == 0 & lag(Number_Chicks) > 0 & lead(Number_Chicks) > 0, TRUE, FALSE)) %>%
-  summarize(two_nests = any(transition, na.rm = TRUE))
+  mutate(transition = ifelse(Number_Chicks > 0 & #if there are ever chicks
+        lead(Number_Chicks, default = 0) == 0 & #and the next row has no chicks
+        lead(Number_Chicks, 2, default = 0) > 0, #and then any row after that has chicks again
+      TRUE, FALSE)) %>% #report TRUE, otherwise FALSE
+  summarize(two_nest_occurance = any(transition, na.rm = TRUE)) %>%
+  filter(two_nest_occurance == TRUE)
+
+
+
+
 
 #unique nest record IDs 
 nests <- unique(nestbox_data$Record)
@@ -56,18 +68,23 @@ indicator <- rep(NA,length(nests))
 
 for(i in 1:length(nests)){
   data <- nestbox_data[which(nestbox_data$Record == nests[i]),]
-  #add the max counts of eggs and chicks 
-  indicator[i] <- max(data$Number_Chicks) + max(data$Number_Eggs)
+  indicator[i] <- max(data$Number_Chicks) + max(data$Number_Eggs) #add the max counts of eggs and chicks 
 }
 
 #note that one of the indicators gives us a max of 10
 #this seems to be a simple data entry error - correct here  
 table(indicator)
-nestbox_data[which(nestbox_data$Record == nests[which(indicator == 10)]),]
-#SJC: THIS IS NOT FIXING THE ERROR - IT IS THE INDICATOR THAT EQUALS 10, NOT THE NUMBER OF EGGS - CHECK TO MAKE SURE YOUR FIX WORKS  
-nestbox_data$Number_Eggs[which(nestbox_data$Number_Eggs == 10)] <- 0 
+nestbox_data[which(nestbox_data$Record == nests[which(indicator == 10)]),] #Shows an entry of 9  eggs
+#SJC: THIS IS NOT FIXING THE ERROR - IT IS THE INDICATOR THAT EQUALS 10, NOT THE NUMBER OF EGGS - CHECK TO MAKE SURE YOUR FIX WORKS #LP: The number of eggs = 9. I address that below.
+nestbox_data[which(nestbox_data$Number_Eggs == 9),] #show me the row where 9 eggs are reported
+egg_9 <- which(nestbox_data$Number_Eggs == 9) #give me the index where this occurs; record row number
+nestbox_data$Number_Eggs[which(nestbox_data$Number_Eggs == 9)] <- 0
+nestbox_data[egg_9,] #check that row to make sure it worked
+nestbox_data[nestbox_data$Record == "2010_51",] #check records to make sure everything looks okay
 
-#delete those nests where the indicator is 0, where there were never eggs or chicks 
+
+
+#delete those nests where the indicator is 0, where there were never eggs or chicks; no point in monitoring these nests 
 nest_data <- nestbox_data[-c(which(is.element(nestbox_data$Record,nests[which(indicator==0)] ))),]
 
 #create the pared down nests list 
@@ -96,8 +113,8 @@ for(j in 1:length(nests2)){
   }else{
   
     #prepare to censor the nest if chicks were still in it at the last observation    
-#SJC: WHAT ABOUT CENSORING THE NEST IF CHICKS WERE IN IT AT THE FIRST OBSERVATION, WHICH IS THE CASE WITH SOME OF THE NESTS ON LINES 30 - 35? 
-#SJC: WHY IS THAT FIX MADE THERE INSTEAD OF HERE?     
+#SJC: WHAT ABOUT CENSORING THE NEST IF CHICKS WERE IN IT AT THE FIRST OBSERVATION, WHICH IS THE CASE WITH SOME OF THE NESTS ON LINES 30 - 35? #LP: None of the nests in those lines feature chicks at first observation, unless I'm missing something?
+#SJC: WHY IS THAT FIX MADE THERE INSTEAD OF HERE?     #LP: I feel tempted to leave things as is instead of merging things if they already work fine. Are you okay with this?
     if(max(data$Date) == max(chicks$Date)){
       outcome[j] <- NA
     }else{ 
