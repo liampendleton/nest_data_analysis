@@ -1,11 +1,11 @@
 library(here)
+#SJC: REMEMBER TO CHECK THE CODE AND MAKE SURE ALL NECESSARY LIBRARIES ARE INDICATED 
+library(dplyr)
 
 #make warnings errors so loops will terminate 
 options(warn = 2)  
 
-#nestling period 
-#29 to 54? need to go to get the primary sources (see Birds of the World: Period from Hatching to Departure)
-
+#hatchling period - see Birds of the World: Period from Hatching to Departure
 #total range 
 low.fledge <- 29
 high.fledge <- 54
@@ -24,6 +24,8 @@ nestbox_data$Date[which(nestbox_data$Date == "2020-06-18")] <- "2010-06-18"
 #create a nest record ID 
 nestbox_data$Record <- paste(nestbox_data$Year,nestbox_data$Box_ID,sep="_")
 
+#SJC: WHERE IS THE CODE THAT ALLOWED YOU TO DETECT THESE PROBLEMS?? PLEASE ADD THAT CODE AND COMMENT CODE TO INDICATE STEPS 
+#SJC: OR IF THAT CODE IS BELOW, NOTE THAT HERE - NOTE THE LINES OF CODE SO THIS CAN BE RECREATED LATER 
 #Anomalous nests that should be removed
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_78a")),]#this nest has no eggs but then chicks appear 
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_57")),]#this nest has no eggs but then chicks appear, then disappear and then reappear!  
@@ -31,7 +33,14 @@ nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_56")),]#this 
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1999_65")),]#this nest has no eggs but then chicks appear  
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_65")),]#this nest has no eggs but then chicks appear  
 nestbox_data <- nestbox_data[-c(which(nestbox_data$Record == "1996_60")),]#this nest has no eggs but then chicks appear  
+#SJC: CHECKED ABOVE IN ORIGINAL DATA  
+#SJC: 1999_78a I AGREE THIS IS A PROBLEM 
+#SJC: 1999_57 I AGREE THIS IS A PROBLEM  
+#SJC: 1999_56 I AGREE THIS IS A PROBLEM  
+#SJC: 1999_65 THIS NEST IS REPEATED IN LIST ABOVE. WHY? IN ORIGINAL DATA, THIS NEST HAD EGGS ON 14 JUNE  
+#SJC: 1999_60 IN ORIGINAL DATA, THIS NEST HAD EGGS ON 9 JULY  
 
+#SJC: WHAT ARE YOU DOING ABOUT THIS? WHAT STEPS ARE YOU TAKING WITH WHAT YOU FIND HERE? PLEASE COMMENT CODE 
 #Two nests in same year?
 result <- nestbox_data %>%
   group_by(Record) %>%
@@ -55,6 +64,7 @@ for(i in 1:length(nests)){
 #this seems to be a simple data entry error - correct here  
 table(indicator)
 nestbox_data[which(nestbox_data$Record == nests[which(indicator == 10)]),]
+#SJC: THIS IS NOT FIXING THE ERROR - IT IS THE INDICATOR THAT EQUALS 10, NOT THE NUMBER OF EGGS - CHECK TO MAKE SURE YOUR FIX WORKS  
 nestbox_data$Number_Eggs[which(nestbox_data$Number_Eggs == 10)] <- 0 
 
 #delete those nests where the indicator is 0, where there were never eggs or chicks 
@@ -86,6 +96,8 @@ for(j in 1:length(nests2)){
   }else{
   
     #prepare to censor the nest if chicks were still in it at the last observation    
+#SJC: WHAT ABOUT CENSORING THE NEST IF CHICKS WERE IN IT AT THE FIRST OBSERVATION, WHICH IS THE CASE WITH SOME OF THE NESTS ON LINES 30 - 35? 
+#SJC: WHY IS THAT FIX MADE THERE INSTEAD OF HERE?     
     if(max(data$Date) == max(chicks$Date)){
       outcome[j] <- NA
     }else{ 
