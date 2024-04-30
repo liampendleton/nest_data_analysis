@@ -17,8 +17,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.sst * sst.year.1[year[i]] #change out SST covariate to 1:5 options
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]]
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + beta.S.sst * sst.winter[year[i]] #change out SST covariate to 1:5 options
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] #change out SST covariate to 1:5 options
 
 } 
 
@@ -77,6 +77,7 @@ sigma.gam ~ dunif(0,10)
 tau.sst <- pow(sigma.sst,-2)
 sigma.sst ~ dunif(0,30)
 beta.S.sst ~ dnorm(0,1)
+# beta.gam.sst ~ dnorm(0,1)
 
 
 int.S ~ dnorm(0,1)

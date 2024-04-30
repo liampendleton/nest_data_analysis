@@ -17,8 +17,8 @@ for(i in 1:n.nests){
   omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
   omega[i,3] <- S[i]*gamma[i]   #2 eggs 
 
-  logit(S[i]) <- int.S + eps.S[year.rand[i]] + w.S[1]*beta.S.chla * chla.year.2[year[i]] + w.S[2]*beta.S.npgo * npgo.year.1[year[i]] + w.S[3]*beta.S.pdo * pdo.pre[year[i]] + w.S[4]*beta.S.sst * sst.year.1[year[i]]
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + w.gam[1]*beta.gam.chla * chla.year.1[year[i]] + w.gam[2]*beta.gam.npgo * npgo.winter[year[i]] + w.gam[3]*beta.gam.pdo * pdo.winter[year[i]] + w.gam[4]*beta.gam.sst * sst.year.1[year[i]]
+  logit(S[i]) <- int.S + eps.S[year.rand[i]] + w.S[1]*beta.S.chla * chla.pre[year[i]] + w.S[2]*beta.S.npgo * npgo.year.1[year[i]] + w.S[3]*beta.S.pdo * pdo.breed[year[i]] + w.S[4]*beta.S.sst * sst.breed[year[i]]
+  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + w.gam[1]*beta.gam.chla * chla.winter[year[i]] + w.gam[2]*beta.gam.npgo * npgo.pre[year[i]] + w.gam[3]*beta.gam.pdo * pdo.winter[year[i]] + w.gam[4]*beta.gam.sst * sst.year.1[year[i]]
 
 } 
 
@@ -53,14 +53,14 @@ for(j in 1:total.chla){
   real.chla[j] <- exp(l.est.chla[j]) #exponentiating est.chla value; expected value of chla
 }
 
-# full-year; May(t-1):Apr(t)
+# pre-breed; Jan(t):Apr(t)
 for(p in 1:n.years.new){
-  chla.year.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
+  chla.pre[p] <- mean(real.chla[((p*12)-3) : (p*12)])
 }
 
-# full-year; Oct(t-1):Sep(t)
+# winter; Oct(t-1):Mar(t)
 for(p in 1:n.years.new){
-  chla.year.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
+  chla.winter[p] <- mean(real.chla[((p*12)-6) : ((p*12)-1)])
 }
 
 ### Addressing missing SST data ### 
@@ -78,6 +78,11 @@ for(k in 1:total.sst){
 # full-year; May(t-1):Apr(t)
 for(p in 1:n.years.new){
   sst.year.1[p] <- mean(real.sst[((p*12)-11) : (p*12)])
+}
+
+## breed; May(t):Sep(t) ##
+for(p in 1:(n.years.new)){
+  sst.breed[p] <- mean(real.sst[((p*12)+1) : ((p*12)+5)])
 }
 
 ##############
@@ -120,13 +125,14 @@ source(here("Scripts", "covariates", "chla.r"))
 #months of May 95 thru August 97 are missing from the front
 #and months of June 22 thru Sept 23 are missing from the end
 chla.data <- chla.fxn()$chla.data
-chla.s1 <- c(rep(NA,28),chla.data,rep(NA,16)) #LP
+chla.s1 <- c(rep(NA,28),chla.data,rep(NA,16))
 l.est.chla <- log(chla.s1)
 
 # NPGO
 source(here("Scripts", "covariates", "npgo.r"))
-npgo.winter <- npgo.fxn()$npgo4
 npgo.year.1 <- npgo.fxn()$npgo1
+npgo.pre <- npgo.fxn()$npgo4
+
 
 # SST
 source(here("Scripts", "covariates", "sst.r"))
@@ -137,7 +143,7 @@ l.sst.data <- log(sst.data) #logged
 # PDO
 source(here("scripts", "covariates", "pdo.r"))
 #Writing out each different PDO covariates from the function
-pdo.pre <- pdo.fxn()$pdo4
+pdo.breed <- pdo.fxn()$pdo5
 pdo.winter <- pdo.fxn()$pdo3 #winter; Oct(t-1) - Mar(t)
 
 # Nest data
@@ -154,9 +160,9 @@ data<-list(y = nests$outcome, year = nests$year.new,
            total.chla = length(l.est.chla),
            l.est.chla = l.est.chla,
            npgo.year.1 = npgo.year.1,
-           npgo.winter = npgo.winter,
+           npgo.pre = npgo.pre,
            pdo.winter = pdo.winter,
-           pdo.pre = pdo.pre,
+           pdo.breed = pdo.breed,
            total.sst = length(sst.data),
            l.sst.data = l.sst.data)
 
