@@ -81,3 +81,29 @@ toptwo <- rbind(out.bestmodel, second)
 means <- apply(toptwo,2,mean)
 CrI.toptwo <- apply(toptwo,2,function(x){quantile(x,probs = c(0.025,0.975))})
 full.toptwo <- rbind(means,CrI.toptwo)
+
+
+###################################
+#Calculate posterior inclusion probabilities and Bayes factors for each model parameter 
+
+Phi.inclusion <- out$sims.list$w.S
+Gam.inclusion <- out$sims.list$w.gam
+
+incl.Phi.CHLA <- mean(Phi.inclusion[,1])
+BF.Phi.CHLA <- (incl.Phi.CHLA/(1-incl.Phi.CHLA))
+incl.Phi.NPGO <- mean(Phi.inclusion[,2])
+BF.Phi.NPGO <- (incl.Phi.NPGO/(1-incl.Phi.NPGO))
+incl.Phi.PDO <- mean(Phi.inclusion[,3])
+BF.Phi.PDO <- (incl.Phi.PDO/(1-incl.Phi.PDO))
+incl.Phi.SST <- mean(Phi.inclusion[,4])
+BF.Phi.SST <- (incl.Phi.SST/(1-incl.Phi.SST))
+
+incl.Gam.CHLA <- mean(Gam.inclusion[,1])
+BF.Gam.CHLA <- (incl.Gam.CHLA/(1-incl.Gam.CHLA))
+incl.Gam.NPGO <- mean(Gam.inclusion[,2])
+BF.Gam.NPGO <- (incl.Gam.NPGO/(1-incl.Gam.NPGO))
+incl.Gam.PDO <- mean(Gam.inclusion[,3])
+BF.Gam.PDO <- (incl.Gam.PDO/(1-incl.Gam.PDO))
+incl.Gam.SST <- mean(Gam.inclusion[,4])
+BF.Gam.SST <- (incl.Gam.SST/(1-incl.Gam.SST))
+
