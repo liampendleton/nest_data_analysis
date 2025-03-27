@@ -1,9 +1,12 @@
 library(here)
 library(tidyverse)
 
-#create a function that can be called on to process and show average annual PDO values from 1995-2023
+#Create a function that can be called on to process and show average annual PDO values from 1995-2023
 pdo.fxn <- function(){
-pdo <- read.csv(here("Data", "PDO.csv"))
+pdo <- read.table("https://www.ncei.noaa.gov/pub/data/cmb/ersst/v5/index/ersst.v5.pdo.dat", 
+                  skip = 1, 
+                  header = TRUE, 
+                  na.strings = "-99.99")
 
 ####
 #PDO setup
@@ -15,7 +18,7 @@ pdo_vec <- pi_full_pdo[,2:13] #get rid of year column
 pdo_vec <- as.matrix(pdo_vec)
 pdo_vec <- t(pdo_vec)
 pdo_vec <- as.numeric(pdo_vec)
-pdo_vec <- pdo_vec[-c(1:4,346:348)] #remove January through April of 1995 and October through December of 2023 
+pdo_vec <- pdo_vec[-c(1:4,358:372)] #remove January through April of 1995 and October through December of 2024 
 
 ## Address different timescales
 pdo.1 <- pdo.2 <- pdo.3 <- pdo.4 <- pdo.5 <- rep(NA,28)
