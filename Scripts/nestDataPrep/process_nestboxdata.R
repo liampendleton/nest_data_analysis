@@ -26,7 +26,6 @@ nestbox_data$Date <- as.Date(nestbox_data$Date,format="%Y-%m-%d") #Convert class
 nestbox_data$Record <- paste(nestbox_data$Year,nestbox_data$Box_ID,sep="_")
 
 
-
 #######################
 ### DATA VALIDATION ###
 ## Go trough a series of steps to identify issues in data.
@@ -174,4 +173,4 @@ summary <- output %>%
 fledged <- sum(summary[,3]) + (2*(sum(summary[,4])))
 
 # Record data
-write.csv(output,file = here("Data","model_input_BETA.csv"),row.names = FALSE) ###CHANGE BETA EVENTUALLY
+write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
