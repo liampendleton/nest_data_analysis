@@ -8,12 +8,12 @@ library(dplyr)
 ## Read in nesting data. Identify and address erroneous observations, then determine outcomes based on the amount of time chicks were known to be alive before disappearing. 
 
 #Read in historic data
-nestbox.init <- read.csv(here("Data","PI_Nest_Data_Full.csv"))
+nestbox.init <- read.csv(here("Data", "Data_Unprocessed", "PI_Nest_Data_Full.csv"))
 nestbox_data <- data.frame(nestbox.init$X,nestbox.init$DATE,nestbox.init$BOX_ID,nestbox.init$Number_Eggs,nestbox.init$Number_Live_Chicks) #isolate what we need
 colnames(nestbox_data) <- c("Year","Date","Box_ID","Number_Eggs","Number_Chicks")
 
 #Read in 2024 data
-nestbox_24 <- read.csv(here("Data","PI_Nest_Data_Full-24_NestBox.csv"))
+nestbox_24 <- read.csv(here("Data","Data_Unprocessed", "PI_Nest_Data_Full-24_NestBox.csv"))
 nestbox_24 <- data.frame(nestbox_24$Year, nestbox_24$Date, nestbox_24$Box_ID, nestbox_24$Number_Eggs, nestbox_24$Number_Live_Chicks) #Pull relevant data
 colnames(nestbox_24) <- c("Year","Date","Box_ID","Number_Eggs","Number_Chicks") #Standardize naming
 nestbox_24$Date <- format(as.Date(nestbox_24$Date, format="%m/%d/%Y"), "%Y-%m-%d") #Match date format to historic data
@@ -173,4 +173,4 @@ summary <- output %>%
 fledged <- sum(summary[,3]) + (2*(sum(summary[,4])))
 
 # Record data
-write.csv(output,file = here("Data","model_input.csv"),row.names = FALSE)
+write.csv(output,file = here("Data","Data_Processed", "model_input.csv"),row.names = FALSE)
