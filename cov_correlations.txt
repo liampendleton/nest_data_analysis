@@ -1,0 +1,92 @@
+
+model {
+
+####################################
+### Addressing missing chla data ###
+
+l.est.chla[1] ~ dnorm(int.chla, tau.chla) #estimated first value of chla dataset
+#loop over remaining months/years
+for (q in 2:total.chla){
+  l.est.chla[q] ~ dnorm(l.est.chla[q-1], tau.chla)
+}
+#back-transform
+for(j in 1:total.chla){
+  real.chla[j] <- exp(l.est.chla[j]) #exponentiating est.chla value; expected value of chla
+}
+
+## Address different timescales
+# full-year; May(t-1):Apr(t)
+for(p in 1:n.years.new){
+  chla.year.1[p] <- mean(real.chla[((p*12)-11) : (p*12)])
+}
+# full-year; Oct(t-1):Sep(t)
+for(p in 1:n.years.new){
+  chla.year.2[p] <- mean(real.chla[((p*12)-6) : ((p*12)+5)])
+}
+# winter; Oct(t-1):Mar(t)
+for(p in 1:n.years.new){
+  chla.winter[p] <- mean(real.chla[((p*12)-6) : ((p*12)-1)])
+}
+# pre-breed; Jan(t):Apr(t)
+for(p in 1:n.years.new){
+  chla.pre[p] <- mean(real.chla[((p*12)-3) : (p*12)])
+}
+# breed; May(t):Sep(t)
+for(p in 1:(n.years.new)){
+  chla.breed[p] <- mean(real.chla[((p*12)+1) : ((p*12)+5)])
+}
+
+###################################
+### Addressing missing sst data ###
+
+#loop over remaining months/years
+for (z in 2:total.sst){
+  l.sst.data[z] ~ dnorm(l.sst.data[z-1], tau.sst)
+}
+
+# address first time point
+for(k in 1:total.sst){
+  real.sst[k] <- exp(l.sst.data[k]) #exponentiating est.sst value; expected value of sst
+}
+
+### Address different timescales ###
+## full-year; May(t-1):Apr(t) ##
+for(p in 1:n.years.new){
+  sst.year.1[p] <- mean(real.sst[((p*12)-11) : (p*12)])
+}
+
+## full-year; Oct(t-1):Sep(t) ##
+for(p in 1:n.years.new){
+  sst.year.2[p] <- mean(real.sst[((p*12)-6) : ((p*12)+5)])
+}
+
+## winter; Oct(t-1):Mar(t) ##
+for(p in 1:n.years.new){
+  sst.winter[p] <- mean(real.sst[((p*12)-6) : ((p*12)-1)])
+}
+
+## pre-breed; Jan(t):Apr(t) ##
+for(p in 1:n.years.new){
+  sst.pre[p] <- mean(real.sst[((p*12)-3) : (p*12)])
+}
+
+## breed; May(t):Sep(t) ##
+for(p in 1:(n.years.new)){
+  sst.breed[p] <- mean(real.sst[((p*12)+1) : ((p*12)+5)])
+}
+
+##############
+#Correlations#
+
+##############
+### Priors ###
+
+int.chla ~ dnorm(0,1)
+tau.chla <- pow(sigma.chla,-2)
+sigma.chla ~ dunif(0,30)
+
+int.sst ~ dnorm(0,1)
+tau.sst <- pow(sigma.sst,-2)
+sigma.sst ~ dunif(0,30)
+
+}
