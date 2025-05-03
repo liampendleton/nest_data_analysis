@@ -1,24 +1,6 @@
 
 model {
 
-for(i in 1:n.nests){
-
-  y[i] ~ dcat(omega[i,1:3]) #a categorical distribution is a multinomial distribution with an index of 1 (i.e., it is like rolling a die once and modeling the probabilities of getting a 1, 2, 3, 4, 5, or 6) 
-
-  omega[i,1] <- (1-S[i])     #failure 
-  omega[i,2] <- S[i]*(1-gamma[i])   #1 egg
-  omega[i,3] <- S[i]*gamma[i]   #2 eggs 
-
-  logit(S[i]) <- eps.S[year.rand[i]] #change out SST covariate to 1:5 options
-  logit(gamma[i]) <- int.gam + eps.gam[year.rand[i]] + beta.gam.sst * sst.breed[year[i]] #change out SST covariate to 1:5 options
-
-} 
-
-for(z in 1:n.years){  #random effects to explain residual annual variation 
-  eps.S[z] ~ dnorm(0,tau.S) 
-  eps.gam[z] ~ dnorm(0,tau.gam)
-} 
-
 ###################################
 ### Addressing missing sst data ###
 
@@ -62,20 +44,7 @@ for(p in 1:(n.years.new)){
 ### Priors ###
 
 int.sst ~ dnorm(0,1)
-tau.S <- pow(sigma.S,-2)
-sigma.S ~ dunif(0,10) 
-tau.gam <- pow(sigma.gam,-2)
-sigma.gam ~ dunif(0,10)
 tau.sst <- pow(sigma.sst,-2)
 sigma.sst ~ dunif(0,30)
-beta.S.sst ~ dnorm(0,1)
-beta.gam.sst ~ dnorm(0,1)
-
-
-# int.S ~ dnorm(0,1) 
-int.gam ~ dnorm(0,1)
-
-# mean.S <- 1/(1+exp(-(int.S)))
-mean.gam <- 1/(1+exp(-(int.gam)))
 
 }
